@@ -1,4 +1,43 @@
 import { AppRouter } from "@app/server";
-import { createTRPCReact } from "@trpc/react-query";
+import {
+  // createTRPCProxyClient,
+  createWSClient,
+  // httpLink,
+  // loggerLink,
+  // splitLink,
+  wsLink,
+} from "@trpc/client";
+import { createTRPCJotai } from "@app/lib";
+// import { createTRPCReact } from "@trpc/react-query";
+const wsClient = createWSClient({
+  url: `ws://localhost:2022`,
+});
 
-export const trpc = createTRPCReact<AppRouter>();
+export const trpc = createTRPCJotai<AppRouter>({
+  transformer: {
+    serialize: data => data,
+    deserialize: data => data,
+  },
+  links: [
+    // loggerLink({
+    //   enabled: opts =>
+    //     typeof window !== "undefined" ||
+    //     (opts.direction === "down" && opts.result instanceof Error),
+    // }),
+    wsLink({
+      client: wsClient,
+    }),
+    // call subscriptions through websockets and the rest over http
+    // splitLink({
+    //   condition(op) {
+    //     return op.type === "subscription";
+    //   },
+    //   true: wsLink({
+    //     client: wsClient,
+    //   }),
+    //   false: httpLink({
+    //     url: `http://localhost:2022`,
+    //   }),
+    // }),
+  ],
+});

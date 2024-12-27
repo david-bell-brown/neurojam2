@@ -1,11 +1,10 @@
 import { observable } from "@trpc/server/observable";
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
-import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import { createContext } from "./context";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 import { WebSocketServer } from "ws";
-import cors from "cors";
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 const greetingRouter = router({
   hello: publicProcedure
@@ -53,20 +52,24 @@ const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
+export type AppRouterInput = inferRouterInputs<AppRouter>;
+export type AppRouterOutput = inferRouterOutputs<AppRouter>;
 
-// http server
-const server = createHTTPServer({
-  router: appRouter,
-  createContext,
-  middleware: cors(),
+const wss = new WebSocketServer({
+  port: 2022,
 });
+const handler = applyWSSHandler({ wss, router: appRouter, createContext });
 
-// ws server
-const wss = new WebSocketServer({ server });
-applyWSSHandler<AppRouter>({
-  wss,
-  router: appRouter,
-  createContext,
+wss.on("connection", ws => {
+  console.log(`➕➕ Connection (${wss.clients.size})`);
+  ws.once("close", () => {
+    console.log(`➖➖ Connection (${wss.clients.size})`);
+  });
 });
+console.log("✅ WebSocket Server listening on ws://localhost:3001");
 
-server.listen(2022);
+process.on("SIGTERM", () => {
+  console.log("SIGTERM");
+  handler.broadcastReconnectNotification();
+  wss.close();
+});

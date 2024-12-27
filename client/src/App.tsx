@@ -1,20 +1,18 @@
-import { useState } from "react";
 import "./App.css";
 import { trpc } from "./utils/trpc";
+import { useAtom } from "jotai";
+
+const greetingAtom = trpc.greeting.hello.atomWithQuery({ name: "world" });
+const numberAtom = trpc.post.randomNumber.atomWithSubscription();
 
 function App() {
-  const [randomNumber, setRandomNumber] = useState(0);
-  const greetingQuery = trpc.greeting.hello.useQuery({ name: "world" });
-  const randomNumberResult = trpc.post.randomNumber.useSubscription(undefined, {
-    onData: num => {
-      setRandomNumber(num.randomNumber);
-    },
-  });
+  const [greeting] = useAtom(greetingAtom);
+  const [randy] = useAtom(numberAtom);
 
   return (
     <div>
-      <div>{greetingQuery.data}</div>
-      <div>Random number: {randomNumber}</div>
+      <div>{greeting}</div>
+      <div>{randy.randomNumber}</div>
     </div>
   );
 }
