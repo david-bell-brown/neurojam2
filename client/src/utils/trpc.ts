@@ -1,4 +1,4 @@
-import { AppRouter } from "@app/server";
+import type { AppRouter } from "@app/server";
 import {
   // createTRPCProxyClient,
   createWSClient,

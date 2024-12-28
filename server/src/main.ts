@@ -66,10 +66,17 @@ wss.on("connection", ws => {
     console.log(`➖➖ Connection (${wss.clients.size})`);
   });
 });
-console.log("✅ WebSocket Server listening on ws://localhost:3001");
+console.log("✅ WebSocket Server listening on ws://localhost:2022");
+
+process.on("SIGINT", () => {
+  handler.broadcastReconnectNotification();
+  wss.close();
+  process.exit(0);
+});
 
 process.on("SIGTERM", () => {
   console.log("SIGTERM");
   handler.broadcastReconnectNotification();
   wss.close();
+  process.exit(0);
 });
