@@ -10,7 +10,7 @@ import {
 import { createTRPCJotai } from "@app/lib";
 // import { createTRPCReact } from "@trpc/react-query";
 const wsClient = createWSClient({
-  url: `ws://localhost:2022`,
+  url: `ws://server-bold-silence-1905.fly.dev:443`,
 });
 
 export const trpc = createTRPCJotai<AppRouter>({

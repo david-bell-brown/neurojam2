@@ -12,15 +12,14 @@
   },
   "dependencies": {
     "@trpc/server": "10.45.2",
-    "cors": "^2.8.5",
-    "tsx": "^4.19.2",
-    "esbuild": "^0.17.10",
     "ws": "^8.18.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "tsx": "^4.19.2",
+    "esbuild": "^0.17.10",
     "@types/node": "^22.10.2",
     "@types/ws": "^8.5.10",
-    "typescript": "catalog:"
+    "typescript": "~5.7.2"
   }
 }

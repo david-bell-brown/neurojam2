@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm run --parallel --stream dev",
-    "dev:server": "tsx watch server/src/main.ts",
-    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:server": "pnpm run --filter server build",
+    "deploy:server": "fly deploy --config ./server/fly.toml"
   },
   "dependencies": {
     "@app/client": "workspace:^",
@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@flydotio/dockerfile": "^0.5.9",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",

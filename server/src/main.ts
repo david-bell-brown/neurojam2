@@ -69,7 +69,7 @@ wss.on("connection", ws => {
     console.log(`➖➖ Connection (${wss.clients.size})`);
   });
 });
-console.log("✅ WebSocket Server listening on 2022");
+console.log("✅ WebSocket Server listening on " + port);
 
 process.on("SIGINT", () => {
   handler.broadcastReconnectNotification();

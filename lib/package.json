@@ -4,14 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "main": "./src/index.ts",
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@trpc/client": "10.45.2",
     "@trpc/server": "10.45.2",
     "jotai": "^2.11.0"
   },
   "devDependencies": {
-    "typescript": "catalog:"
+    "typescript": "~5.7.2"
   }
 }
