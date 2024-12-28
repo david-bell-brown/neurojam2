@@ -1,16 +1,9 @@
 import type { AppRouter } from "@app/server";
-import {
-  // createTRPCProxyClient,
-  createWSClient,
-  // httpLink,
-  // loggerLink,
-  // splitLink,
-  wsLink,
-} from "@trpc/client";
+import { createWSClient, wsLink } from "@trpc/client";
 import { createTRPCJotai } from "@app/lib";
-// import { createTRPCReact } from "@trpc/react-query";
+
 const wsClient = createWSClient({
-  url: `wss://server-bold-silence-1905.fly.dev`,
+  url: import.meta.env.VITE_WEBSOCKET_URL,
 });
 
 export const trpc = createTRPCJotai<AppRouter>({
@@ -27,17 +20,5 @@ export const trpc = createTRPCJotai<AppRouter>({
     wsLink({
       client: wsClient,
     }),
-    // call subscriptions through websockets and the rest over http
-    // splitLink({
-    //   condition(op) {
-    //     return op.type === "subscription";
-    //   },
-    //   true: wsLink({
-    //     client: wsClient,
-    //   }),
-    //   false: httpLink({
-    //     url: `http://localhost:2022`,
-    //   }),
-    // }),
   ],
 });
