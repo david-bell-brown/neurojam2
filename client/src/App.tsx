@@ -1,42 +1,61 @@
 import { Canvas } from "@react-three/fiber";
 import "./App.css";
 import { Stage } from "./components/stage/Stage";
-import { OrbitControls } from "@react-three/drei";
-import { trpc } from "./utils/trpc";
-import { useAtom } from "jotai";
+import {
+  Grid,
+  KeyboardControls,
+  KeyboardControlsEntry,
+  OrbitControls,
+} from "@react-three/drei";
+import { Physics } from "@react-three/rapier";
+import { Suspense } from "react";
+import Player from "./components/player/Player";
 
-const randomAtom = trpc.post.randomNumber.atomWithSubscription();
+enum Controls {
+  moveUp = "moveUp",
+  moveDown = "moveDown",
+  moveLeft = "moveLeft",
+  moveRight = "moveRight",
+}
+
+const controlMap: KeyboardControlsEntry<Controls>[] = [
+  { name: Controls.moveUp, keys: ["ArrowUp", "KeyW"] },
+  { name: Controls.moveDown, keys: ["ArrowDown", "KeyS"] },
+  { name: Controls.moveLeft, keys: ["ArrowLeft", "KeyA"] },
+  { name: Controls.moveRight, keys: ["ArrowRight", "KeyD"] },
+];
 
 function App() {
-  const [random] = useAtom(randomAtom);
   return (
-    <div id="canvas-container">
-      <Canvas
-        camera={{
-          fov: 60,
-          near: 0.1,
-          far: 1000,
-          position: [0, 10, 40],
-        }}
-        shadows
-      >
-        <OrbitControls />
-        <ambientLight intensity={0.1} />
-        <Stage />
-        <mesh position={[20, 5, 0]} castShadow receiveShadow>
-          <sphereGeometry args={[1, 32, 32]} />
-          <meshLambertMaterial color="red" />
-        </mesh>
-        <mesh
-          position={[random.randomNumber * 10, 1, random.randomNumber * 10]}
-          castShadow
-          receiveShadow
+    <KeyboardControls map={controlMap}>
+      <div id="canvas-container">
+        <Canvas
+          camera={{
+            fov: 30,
+            near: 0.1,
+            far: 1000,
+            position: [0, 15, 15],
+          }}
+          shadows
         >
-          <sphereGeometry args={[1, 32, 32]} />
-          <meshLambertMaterial color="red" />
-        </mesh>
-      </Canvas>
-    </div>
+          <OrbitControls />
+          <Suspense>
+            <Physics debug>
+              <Stage />
+              <Player initialPosition={[0, 0, 0]} />
+              <Grid
+                cellSize={1}
+                cellThickness={1}
+                cellColor={"#6f6f6f"}
+                sectionSize={10}
+                position={[0, 0.05, 0]}
+                infiniteGrid
+              />
+            </Physics>
+          </Suspense>
+        </Canvas>
+      </div>
+    </KeyboardControls>
   );
 }
 
