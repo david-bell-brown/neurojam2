@@ -1,5 +1,3 @@
-// Probably to be refactored as generic Sprite component
-
 import { Billboard } from "@react-three/drei";
 import { DoubleSide, NearestFilter, TextureLoader } from "three";
 import { Direction } from "../../utils/atoms";
@@ -8,6 +6,7 @@ import { useLoader } from "@react-three/fiber";
 
 type Props = {
   direction: Direction;
+  state: string;
 };
 
 const offsetMap = {
@@ -17,7 +16,7 @@ const offsetMap = {
   [Direction.RIGHT]: 0.75,
 };
 
-function BillboardSprite({ direction }: Props) {
+function PlayerSprite({ direction, state }: Props) {
   const texture = useLoader(TextureLoader, tutel);
   texture.minFilter = NearestFilter;
   texture.magFilter = NearestFilter;
@@ -30,7 +29,10 @@ function BillboardSprite({ direction }: Props) {
         <shadowMaterial side={DoubleSide} />
       </mesh>
       <Billboard>
-        <mesh position={[0, 0.5, 0]}>
+        <mesh
+          position={[0, 0.5, 0]}
+          rotation={state === "dead" ? [Math.PI, 0, 0] : [0, 0, 0]}
+        >
           <planeGeometry args={[1, 1]} />
           <meshLambertMaterial
             attach="material"
@@ -44,4 +46,4 @@ function BillboardSprite({ direction }: Props) {
   );
 }
 
-export default BillboardSprite;
+export default PlayerSprite;

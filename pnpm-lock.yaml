@@ -72,6 +72,9 @@ importers:
       jotai-optics:
         specifier: ^0.4.0
         version: 0.4.0(jotai@2.11.0(@types/react@18.3.18)(react@18.3.1))(optics-ts@2.4.1)
+      jotai-xstate:
+        specifier: ^0.6.0
+        version: 0.6.0(jotai@2.11.0(@types/react@18.3.18)(react@18.3.1))(xstate@5.19.1)
       nanoid:
         specifier: ^5.0.9
         version: 5.0.9
@@ -90,6 +93,9 @@ importers:
       three:
         specifier: ^0.171.0
         version: 0.171.0
+      xstate:
+        specifier: ^5.19.1
+        version: 5.19.1
     devDependencies:
       '@types/react':
         specifier: ^18.3.18
@@ -1618,6 +1624,12 @@ packages:
       jotai: '>=2.0.0'
       optics-ts: '>=2.0.0'
 
+  jotai-xstate@0.6.0:
+    resolution: {integrity: sha512-rVXTqvVpS89IB0c1yXcAQ3ETLvvUw6y4/uBzd3leAGKbqhnhT2RK+5Bsk65Dnhx/l8hF50BDaMq/4wtYWLeFiw==}
+    peerDependencies:
+      jotai: '>=2.0.0'
+      xstate: '>=5.0.0'
+
   jotai@2.11.0:
     resolution: {integrity: sha512-zKfoBBD1uDw3rljwHkt0fWuja1B76R7CjznuBO+mSX6jpsO1EBeWNRKpeaQho9yPI/pvCv4recGfgOXGxwPZvQ==}
     engines: {node: '>=12.20.0'}
@@ -2253,6 +2265,9 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  xstate@5.19.1:
+    resolution: {integrity: sha512-vFt3q9EBnO/qTTf9AG/5GosGwdDEftw5VOd3ytfSwUQRvkj6oJkxeBQaCqJUANjHrkK341jMkEZP0zeqrx2tww==}
 
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -3702,6 +3717,11 @@ snapshots:
       jotai: 2.11.0(@types/react@18.3.18)(react@18.3.1)
       optics-ts: 2.4.1
 
+  jotai-xstate@0.6.0(jotai@2.11.0(@types/react@18.3.18)(react@18.3.1))(xstate@5.19.1):
+    dependencies:
+      jotai: 2.11.0(@types/react@18.3.18)(react@18.3.1)
+      xstate: 5.19.1
+
   jotai@2.11.0(@types/react@18.3.18)(react@18.3.1):
     optionalDependencies:
       '@types/react': 18.3.18
@@ -4367,6 +4387,8 @@ snapshots:
       strip-ansi: 6.0.1
 
   ws@8.18.0: {}
+
+  xstate@5.19.1: {}
 
   y18n@5.0.8: {}
 

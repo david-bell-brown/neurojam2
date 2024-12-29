@@ -1,47 +1,62 @@
 import { useFrame } from "@react-three/fiber";
-import PlayerRender from "./BillboardSprite";
+import PlayerRender from "./PlayerSprite";
 import {
   CapsuleCollider,
   RapierRigidBody,
   RigidBody,
 } from "@react-three/rapier";
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { useKeyboardControls } from "@react-three/drei";
 import { Vector3 as ThreeVector3 } from "three";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { focusAtom } from "jotai-optics";
 import {
   cAtomDirection,
   cAtomHealth,
+  cAtomMachine,
   cAtomPosition,
   Direction,
+  cAtomMoveSpeed,
 } from "../../utils/atoms";
-
-const moveSpeedAtom = atom(2);
-// const positionAtom = atom<Vector3>([0, 0, 0]);
-// const bodyRef = atom<RapierRigidBody>(null!);
 
 type PlayerProps = {
   id: string;
 };
 
 export default function Player({ id }: PlayerProps) {
-  const [positionAtom, healthAtom, directionAtom] = useMemo(() => {
+  const [
+    positionAtom,
+    healthAtom,
+    directionAtom,
+    machineAtomAtom,
+    moveSpeedAtom,
+  ] = useMemo(() => {
     const position = focusAtom(cAtomPosition, optic => optic.prop(id));
     const health = focusAtom(cAtomHealth, optic => optic.prop(id));
     const direction = focusAtom(cAtomDirection, optic => optic.prop(id));
-    return [position, health, direction];
+    const machine = focusAtom(cAtomMachine, optic => optic.prop(id));
+    const moveSpeed = focusAtom(cAtomMoveSpeed, optic => optic.prop(id));
+    return [position, health, direction, machine, moveSpeed];
   }, [id]);
 
   const [position, _setPosition] = useAtom(positionAtom);
   const [health, _setHealth] = useAtom(healthAtom);
   const [direction, setDirection] = useAtom(directionAtom);
+  const [machineAtom] = useAtom(machineAtomAtom);
+  const [state, _send] = useAtom(machineAtom);
 
   const bodyRef = useRef<RapierRigidBody>(null!);
   const [, getInput] = useKeyboardControls();
   const moveSpeed = useAtomValue(moveSpeedAtom);
 
+  useEffect(() => {
+    console.log("player machine: ", state.value);
+  }, [state]);
+
   useFrame(() => {
+    if (state.matches("dead")) {
+      return;
+    }
     const { moveUp, moveDown, moveLeft, moveRight } = getInput();
     const x = moveLeft ? -1 : moveRight ? 1 : 0;
     const z = moveUp ? -1 : moveDown ? 1 : 0;
@@ -73,7 +88,7 @@ export default function Player({ id }: PlayerProps) {
       name={id}
     >
       <Suspense fallback={null}>
-        <PlayerRender direction={direction} />
+        <PlayerRender direction={direction} state={state.value} />
       </Suspense>
       <CapsuleCollider args={[0.2, 0.3]} position={[0, 0.5, 0]} />
       <group position={[0, 1, 0]}>

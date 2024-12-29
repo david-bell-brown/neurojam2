@@ -3,6 +3,7 @@ import { Vector3 } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import { cAtomHealth, cAtomPosition, cAtomType } from "../../utils/atoms";
 import { useCallback } from "react";
+import { addComponent, removeComponent } from "../../lib/ecs";
 
 export function useEnemyEntity() {
   const [_type, setType] = useAtom(cAtomType);
@@ -12,9 +13,9 @@ export function useEnemyEntity() {
   const createEntity = useCallback(
     (pos: Vector3, health: number) => {
       const id = nanoid();
-      setType(prev => ({ ...prev, [id]: "enemy" }));
-      setPosition(prev => ({ ...prev, [id]: pos }));
-      setHealth(prev => ({ ...prev, [id]: health }));
+      addComponent(id, "enemy", setType);
+      addComponent(id, pos, setPosition);
+      addComponent(id, health, setHealth);
       return id;
     },
     [setHealth, setPosition, setType]
@@ -22,9 +23,9 @@ export function useEnemyEntity() {
 
   const destroyEntity = useCallback(
     (id: string) => {
-      setType(prev => ({ ...prev, [id]: null }));
-      setPosition(prev => ({ ...prev, [id]: null }));
-      setHealth(prev => ({ ...prev, [id]: null }));
+      removeComponent(id, setType);
+      removeComponent(id, setPosition);
+      removeComponent(id, setHealth);
     },
     [setHealth, setPosition, setType]
   );

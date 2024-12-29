@@ -43,7 +43,7 @@ function App() {
     useEnemyEntity();
 
   useEffect(() => {
-    const playerId = createPlayer([0, 0, 0], 5);
+    const playerId = createPlayer([0, 0, 0]);
     const id1 = createEnemyEntity([-1, 0, 1], 5);
     return () => {
       destroyPlayer(playerId);

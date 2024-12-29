@@ -1,5 +1,5 @@
-import { useAtom } from "jotai";
-import { cAtomHealth, cAtomPosition } from "../../utils/atoms";
+import { atom, useAtom, WritableAtom } from "jotai";
+import { cAtomHealth, cAtomMachine, cAtomPosition } from "../../utils/atoms";
 import { focusAtom } from "jotai-optics";
 import { useCallback, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -8,6 +8,22 @@ import {
   CuboidCollider,
   RigidBody,
 } from "@react-three/rapier";
+import { AnyEventObject } from "xstate";
+import { RESTART } from "jotai-xstate";
+
+const sendAtom = atom(
+  null,
+  (
+    get,
+    send,
+    [inputAtom, sendEvent]: [
+      WritableAtom<unknown, [AnyEventObject | typeof RESTART], unknown>,
+      AnyEventObject | typeof RESTART,
+    ]
+  ) => {
+    send(inputAtom, sendEvent);
+  }
+);
 
 export default function Enemy({ id }: { id: string }) {
   const [positionAtom, healthAtom] = useMemo(() => {
@@ -18,7 +34,9 @@ export default function Enemy({ id }: { id: string }) {
 
   const [position, setPosition] = useAtom(positionAtom);
   const [health, _setHealth] = useAtom(healthAtom);
-  const [otherHealth, setOtherHealth] = useAtom(cAtomHealth);
+  // const [otherHealth, setOtherHealth] = useAtom(cAtomHealth);
+  const [otherMachines] = useAtom(cAtomMachine);
+  const [, sendProxy] = useAtom(sendAtom);
 
   useFrame(state => {
     setPosition([
@@ -31,16 +49,20 @@ export default function Enemy({ id }: { id: string }) {
   const onIntersectionEnter = useCallback(
     ({ other }: CollisionPayload) => {
       console.log("Collision", other.rigidBodyObject.name);
-      if (otherHealth[other.rigidBodyObject.name]) {
-        setOtherHealth(prev => {
-          return {
-            ...prev,
-            [other.rigidBodyObject.name]: prev[other.rigidBodyObject.name] - 1,
-          };
-        });
+      if (otherMachines[other.rigidBodyObject.name]) {
+        const machine = otherMachines[other.rigidBodyObject.name];
+        sendProxy([machine, { type: "hurt" }]);
       }
+      // if (otherHealth[other.rigidBodyObject.name]) {
+      //   setOtherHealth(prev => {
+      //     return {
+      //       ...prev,
+      //       [other.rigidBodyObject.name]: prev[other.rigidBodyObject.name] - 1,
+      //     };
+      //   });
+      // }
     },
-    [otherHealth, setOtherHealth]
+    [otherMachines, sendProxy]
   );
 
   return (
