@@ -17,7 +17,7 @@ export default function Enemy({ id }: { id: string }) {
   }, [id]);
 
   const [position, setPosition] = useAtom(positionAtom);
-  const [health, setHealth] = useAtom(healthAtom);
+  const [health, _setHealth] = useAtom(healthAtom);
   const [otherHealth, setOtherHealth] = useAtom(cAtomHealth);
 
   useFrame(state => {

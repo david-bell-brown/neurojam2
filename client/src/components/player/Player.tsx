@@ -1,4 +1,4 @@
-import { useFrame, Vector3 } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import PlayerRender from "./BillboardSprite";
 import {
   CapsuleCollider,
@@ -27,8 +27,8 @@ export default function Player({ id }: PlayerProps) {
     return [position, health];
   }, [id]);
 
-  const [position, setPosition] = useAtom(positionAtom);
-  const [health, setHealth] = useAtom(healthAtom);
+  const [position, _setPosition] = useAtom(positionAtom);
+  const [health, _setHealth] = useAtom(healthAtom);
 
   const bodyRef = useRef<RapierRigidBody>(null!);
   const [, getInput] = useKeyboardControls();

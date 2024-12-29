@@ -1,4 +1,4 @@
-import { Canvas, Vector3 } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import "./App.css";
 import { Stage } from "./components/stage/Stage";
 import {
@@ -50,10 +50,6 @@ function App() {
       destroyEnemyEntity(id1);
     };
   }, [createEnemyEntity, createPlayer, destroyEnemyEntity, destroyPlayer]);
-
-  // useEffect(() => {
-  //   console.log(entities);
-  // }, [entities]);
 
   return (
     <KeyboardControls map={controlMap}>
