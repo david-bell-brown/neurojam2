@@ -3,7 +3,7 @@
 import { Billboard } from "@react-three/drei";
 import { DoubleSide } from "three";
 
-function PlayerRender() {
+function BillboardSprite() {
   return (
     <group>
       <mesh castShadow position={[0, 0.5, 0]}>
@@ -20,4 +20,4 @@ function PlayerRender() {
   );
 }
 
-export default PlayerRender;
+export default BillboardSprite;

@@ -1,10 +1,18 @@
 import { Vector3 } from "@react-three/fiber";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
-import { ReactNode } from "react";
+import { ReactNode, useCallback } from "react";
 
 export function WallBody({ children }: { children: ReactNode }) {
+  const onCollisionEnter = useCallback(({ manifold, target, other }) => {
+    console.log("Collision", manifold, target, other);
+  }, []);
+
   return (
-    <RigidBody type="fixed" colliders={false}>
+    <RigidBody
+      type="fixed"
+      colliders={false}
+      onCollisionEnter={onCollisionEnter}
+    >
       {children}
     </RigidBody>
   );
