@@ -46,4 +46,4 @@ export const cAtomPlayerMachine =
 export const cAtomSpawnerMachine =
   cAtomStore<ReturnType<typeof atomWithMachine<SpawnMachine>>>();
 export const cAtomMoveSpeed = cAtomStore<number>();
-export const cAtomCallback = cAtomStore<(_args: unknown) => void>();
+export const cAtomCallbacks = cAtomStore<((_args: unknown) => void)[]>();

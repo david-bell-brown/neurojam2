@@ -1,10 +1,10 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { useEffect, useMemo } from "react";
 import {
   cAtomPosition,
   cAtomSpawnerMachine,
-  cAtomCallback,
+  cAtomCallbacks,
 } from "../../utils/atoms";
 
 export default function SpawnerTile({ id }: { id: string }) {
@@ -12,15 +12,15 @@ export default function SpawnerTile({ id }: { id: string }) {
     () => [
       focusAtom(cAtomPosition, optic => optic.prop(id)),
       focusAtom(cAtomSpawnerMachine, optic => optic.prop(id)),
-      focusAtom(cAtomCallback, optic => optic.prop(id)),
+      focusAtom(cAtomCallbacks, optic => optic.prop(id)),
     ],
     [id]
   );
 
   const [position, _setPosition] = useAtom(positionAtom);
-  const [machineAtom] = useAtom(machineAtomAtom);
+  const machineAtom = useAtomValue(machineAtomAtom);
   const [state, send] = useAtom(machineAtom);
-  const [callback] = useAtom(callbackAtom);
+  const [callback] = useAtomValue(callbackAtom);
 
   useEffect(() => {
     if (state.matches("spawning")) {
