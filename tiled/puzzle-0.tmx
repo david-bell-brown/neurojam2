@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.0" class="puzzle" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="1" tileheight="1" infinite="0" nextlayerid="5" nextobjectid="9">
+ <editorsettings>
+  <export target="../server/src/assets/puzzle-0.json" format="json"/>
+ </editorsettings>
  <properties>
   <property name="difficulty" type="int" value="1"/>
  </properties>
  <tileset firstgid="1" source="marker.tsx"/>
- <layer id="1" name="walls" width="10" height="10" tintcolor="#000000">
+ <layer id="1" name="walls" class="boolmap" width="10" height="10" tintcolor="#000000">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,
 1,0,0,1,0,0,0,0,0,1,
@@ -18,7 +21,7 @@
 1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <layer id="2" name="pits" width="10" height="10" tintcolor="#83ff0000">
+ <layer id="2" name="pits" class="boolmap" width="10" height="10" tintcolor="#83ff0000">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,

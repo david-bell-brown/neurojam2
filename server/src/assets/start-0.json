@@ -4,6 +4,7 @@
  "infinite":false,
  "layers":[
         {
+         "class":"boolmap",
          "data":[1, 1, 0, 1, 1,
             1, 0, 0, 0, 1,
             1, 0, 0, 0, 1,
@@ -11,7 +12,7 @@
             1, 1, 1, 1, 1],
          "height":5,
          "id":1,
-         "name":"Tile Layer 1",
+         "name":"walls",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -22,7 +23,7 @@
         {
          "draworder":"topdown",
          "id":2,
-         "name":"Object Layer 1",
+         "name":"doors",
          "objects":[
                 {
                  "height":1,

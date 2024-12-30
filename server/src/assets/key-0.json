@@ -3,6 +3,7 @@
  "infinite":false,
  "layers":[
         {
+         "class":"boolmap",
          "data":[1, 1, 1, 1, 1,
             1, 0, 0, 0, 1,
             0, 0, 0, 0, 1,
@@ -44,7 +45,7 @@
                  "visible":true,
                  "width":0,
                  "x":2.5,
-                 "y":1.49997346200798
+                 "y":1.49997
                 }],
          "opacity":1,
          "type":"objectgroup",
