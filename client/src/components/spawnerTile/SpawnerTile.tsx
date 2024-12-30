@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import {
   cAtomPosition,
   cAtomSpawnerMachine,
-  cAtomCallbacks,
+  cAtomPositionCallbacks,
 } from "../../utils/atoms";
 
 export default function SpawnerTile({ id }: { id: string }) {
@@ -12,7 +12,7 @@ export default function SpawnerTile({ id }: { id: string }) {
     () => [
       focusAtom(cAtomPosition, optic => optic.prop(id)),
       focusAtom(cAtomSpawnerMachine, optic => optic.prop(id)),
-      focusAtom(cAtomCallbacks, optic => optic.prop(id)),
+      focusAtom(cAtomPositionCallbacks, optic => optic.prop(id)),
     ],
     [id]
   );
@@ -24,10 +24,10 @@ export default function SpawnerTile({ id }: { id: string }) {
 
   useEffect(() => {
     if (state.matches("spawning")) {
-      callback(position);
+      callback(id, position);
       send({ type: "spawned" });
     }
-  }, [state, callback, position, send]);
+  }, [state, callback, position, send, id]);
 
   const debug = process.env.NODE_ENV === "development";
   return (

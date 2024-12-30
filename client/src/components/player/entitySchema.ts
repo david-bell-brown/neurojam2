@@ -8,6 +8,7 @@ import {
   cAtomType,
   Direction,
   cAtomMoveSpeed,
+  cAtomNearestSpawner,
 } from "../../utils/atoms";
 import { useCallback } from "react";
 import { addComponent, removeComponent } from "../../lib/ecs";
@@ -40,15 +41,24 @@ const createPlayerMachine = (id: string) =>
         },
       },
       dead: {
+        after: {
+          3000: "respawn",
+        },
+      },
+      respawn: {
         on: {
-          respawn: {
+          respawned: {
             target: "idle",
           },
         },
       },
     },
   });
+
 export type PlayerMachine = ReturnType<typeof createPlayerMachine>;
+export type PlayerMachineAtom = ReturnType<
+  typeof atomWithMachine<PlayerMachine>
+>;
 
 export function usePlayerEntity() {
   const [_type, setType] = useAtom(cAtomType);
@@ -56,9 +66,10 @@ export function usePlayerEntity() {
   const [_direction, setDirection] = useAtom(cAtomDirection);
   const [_machine, setMachine] = useAtom(cAtomPlayerMachine);
   const [_moveSpeed, setMoveSpeed] = useAtom(cAtomMoveSpeed);
+  const [_nearestSpawner, setNearestSpawner] = useAtom(cAtomNearestSpawner);
 
   const createEntity = useCallback(
-    (pos: Vector3) => {
+    (pos: Vector3, nearestSpawner: string) => {
       const id = nanoid();
       const machineAtom = atomWithMachine(createPlayerMachine(id));
       addComponent(id, "player", setType);
@@ -66,9 +77,17 @@ export function usePlayerEntity() {
       addComponent(id, Direction.DOWN, setDirection);
       addComponent(id, machineAtom, setMachine);
       addComponent(id, 2, setMoveSpeed);
+      addComponent(id, nearestSpawner, setNearestSpawner);
       return id;
     },
-    [setDirection, setPosition, setType, setMachine, setMoveSpeed]
+    [
+      setType,
+      setPosition,
+      setDirection,
+      setMachine,
+      setMoveSpeed,
+      setNearestSpawner,
+    ]
   );
 
   const destroyEntity = useCallback(
@@ -78,8 +97,16 @@ export function usePlayerEntity() {
       removeComponent(id, setDirection);
       removeComponent(id, setMachine);
       removeComponent(id, setMoveSpeed);
+      removeComponent(id, setNearestSpawner);
     },
-    [setDirection, setPosition, setType, setMachine, setMoveSpeed]
+    [
+      setType,
+      setPosition,
+      setDirection,
+      setMachine,
+      setMoveSpeed,
+      setNearestSpawner,
+    ]
   );
 
   return { createEntity, destroyEntity };

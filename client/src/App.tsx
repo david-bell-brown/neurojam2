@@ -40,7 +40,7 @@ const TypeRenderMap = {
 
 function App() {
   const entities = useAtomValue(cAtomType);
-  const { createEntity: createPlayer, destroyEntity: destroyPlayer } =
+  const { createEntity: createPlayer, destroyEntity: _destroyPlayer } =
     usePlayerEntity();
   const { createEntity: createEnemyEntity, destroyEntity: destroyEnemyEntity } =
     useEnemyEntity();
@@ -50,25 +50,23 @@ function App() {
   } = useSpawnerEntity();
 
   const spawnerCallback = useCallback(
-    (pos: Vector3) => {
-      createPlayer(pos);
+    (spawnerId: string, pos: Vector3) => {
+      createPlayer(pos, spawnerId);
     },
     [createPlayer]
   );
 
   useEffect(() => {
     const id1 = createEnemyEntity([-1, 0, 1], 5);
-    const spawnerId = createSpawnerEntity([0, 0, 0], spawnerCallback, true);
+    const spawnerId = createSpawnerEntity([0, 0, -2], spawnerCallback, true);
     return () => {
       destroyEnemyEntity(id1);
       destroySpawnerEntity(spawnerId);
     };
   }, [
     createEnemyEntity,
-    createPlayer,
     createSpawnerEntity,
     destroyEnemyEntity,
-    destroyPlayer,
     destroySpawnerEntity,
     spawnerCallback,
   ]);

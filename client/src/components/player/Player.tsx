@@ -17,7 +17,9 @@ import {
   cAtomPosition,
   Direction,
   cAtomMoveSpeed,
+  cAtomNearestSpawner,
 } from "../../utils/atoms";
+import useRespawnBehaviour from "./useRespawnBehaviour";
 
 type PlayerProps = {
   id: string;
@@ -30,6 +32,7 @@ export default function Player({ id }: PlayerProps) {
     directionAtom,
     machineAtomAtom,
     moveSpeedAtom,
+    nearestSpawnerAtom,
   ] = useMemo(
     () => [
       focusAtom(cAtomPosition, optic => optic.prop(id)),
@@ -37,6 +40,7 @@ export default function Player({ id }: PlayerProps) {
       focusAtom(cAtomDirection, optic => optic.prop(id)),
       focusAtom(cAtomPlayerMachine, optic => optic.prop(id)),
       focusAtom(cAtomMoveSpeed, optic => optic.prop(id)),
+      focusAtom(cAtomNearestSpawner, optic => optic.prop(id)),
     ],
     [id]
   );
@@ -51,12 +55,14 @@ export default function Player({ id }: PlayerProps) {
   const [, getInput] = useKeyboardControls();
   const moveSpeed = useAtomValue(moveSpeedAtom);
 
+  useRespawnBehaviour(machineAtom, nearestSpawnerAtom, bodyRef);
+
   useEffect(() => {
     console.log("player machine: ", state.value);
   }, [state]);
 
   useFrame(() => {
-    if (state.matches("dead")) {
+    if (!(state.matches("idle") || state.matches("walking"))) {
       return;
     }
     if (!bodyRef.current) {

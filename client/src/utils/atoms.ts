@@ -3,7 +3,7 @@ import { cAtomStore } from "../lib/ecs";
 import { atomWithMachine, RESTART } from "jotai-xstate";
 import { atom, WritableAtom } from "jotai";
 import { AnyEventObject } from "xstate";
-import { PlayerMachine } from "../components/player/entitySchema";
+import { PlayerMachineAtom } from "../components/player/entitySchema";
 import { SpawnMachine } from "../components/spawnerTile/entitySchema";
 
 export enum Direction {
@@ -41,9 +41,10 @@ export const cAtomType = cAtomStore<string>();
 export const cAtomPosition = cAtomStore<Vector3>();
 export const cAtomHealth = cAtomStore<number>();
 export const cAtomDirection = cAtomStore<Direction>();
-export const cAtomPlayerMachine =
-  cAtomStore<ReturnType<typeof atomWithMachine<PlayerMachine>>>();
+export const cAtomPlayerMachine = cAtomStore<PlayerMachineAtom>();
 export const cAtomSpawnerMachine =
   cAtomStore<ReturnType<typeof atomWithMachine<SpawnMachine>>>();
 export const cAtomMoveSpeed = cAtomStore<number>();
-export const cAtomCallbacks = cAtomStore<((_args: unknown) => void)[]>();
+export const cAtomPositionCallbacks =
+  cAtomStore<((id: string, position: Vector3) => void)[]>();
+export const cAtomNearestSpawner = cAtomStore<string>();

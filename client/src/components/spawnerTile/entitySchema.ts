@@ -8,7 +8,7 @@ import {
   cAtomType,
   cAtomPosition,
   cAtomSpawnerMachine,
-  cAtomCallbacks,
+  cAtomPositionCallbacks,
 } from "../../utils/atoms";
 import { Vector3 } from "@react-three/fiber";
 
@@ -39,10 +39,14 @@ export function useSpawnerEntity() {
   const [, setType] = useAtom(cAtomType);
   const [, setPosition] = useAtom(cAtomPosition);
   const [, setMachine] = useAtom(cAtomSpawnerMachine);
-  const [, setCallback] = useAtom(cAtomCallbacks);
+  const [, setCallback] = useAtom(cAtomPositionCallbacks);
 
   const createEntity = useCallback(
-    (pos: Vector3, callback: (pos: Vector3) => void, immediate = false) => {
+    (
+      pos: Vector3,
+      callback: (spawnerId: string, pos: Vector3) => void,
+      immediate = false
+    ) => {
       const id = nanoid();
       const machineAtom = atomWithMachine(
         createSpawnMachine(id, immediate ? "spawning" : "idle")
