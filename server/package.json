@@ -11,6 +11,7 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
+    "@app/lib": "workspace:^",
     "@trpc/server": "10.45.2",
     "ws": "^8.18.0",
     "zod": "^3.24.1"

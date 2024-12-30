@@ -131,6 +131,9 @@ importers:
 
   server:
     dependencies:
+      '@app/lib':
+        specifier: workspace:^
+        version: link:../lib
       '@trpc/server':
         specifier: 10.45.2
         version: 10.45.2

@@ -1,3 +1,5 @@
+import { PointRoomFeature, RectRoomFeature, RoomDef, RoomFeature } from "@app/lib";
+
 // RAW JSON STRUCTURES
 interface TiledExternTileset {
     firstgid: number,
@@ -87,60 +89,9 @@ interface TiledMap {
     version: "1.10",
     // drop renderorder (irrelevant unless tileset tiles are larger than the map tiles)
 }
+//////////
 
-// OUTPUT STRUCTURES
-export interface HasMetadata {
-    class: string,
-    properties: Record<string, string|number>,
-}
-
-
-export interface CommonRoomFeature extends HasMetadata {
-    name: string,
-    x: number,
-    z: number, // was y
-    layerIndex: number,
-    tiled_id: number, // was id
-    // links: Record<string, number>,
-    // drop rotation, visible
-}
-export interface BoolmapRoomFeature extends HasMetadata {
-    type: "map",
-    name: string,
-    data: boolean[][],
-    layerIndex: number,
-}
-}
-
-export interface PointRoomFeature extends CommonRoomFeature {
-    type: "point",
-}
-export interface RectRoomFeature extends CommonRoomFeature {
-    type: "rect", // doesn't match any other type
-    width: number,
-    height: number,
-}
-export type RoomFeature = BoolmapRoomFeature | PointRoomFeature | RectRoomFeature;
-// not implemented yet! TileEntity | ImageEntity | EllipseEntity | PathEntity | TextEntity
-
-export interface RoomLayer extends HasMetadata {
-    name: string,
-    tiled_id: number, // was "id"
-    type: "map" | "object" | "group", // others not implemented
-    parentIndex: number | null,
-    // drop paralax, offset, tint, locked, visible, opacity
-}
-
-export interface RoomDef extends HasMetadata {
-    height: number,
-    width: number,
-    features: RoomFeature[],
-    layers: RoomLayer[],
-    tilesets: [], // TileSet[]
-    // drop tilewidth/height for now; they're not very useful to us
-}
-
-function flattenProps(properties: TiledProperty[] = []): Record<string, string|number> {
+function flattenProps(properties: TiledProperty[] = []): Record<string, string|number|boolean> {
     let result = {};
     for (let prop of properties) {
         if (prop.type === "object") continue; // handled separately
@@ -149,20 +100,7 @@ function flattenProps(properties: TiledProperty[] = []): Record<string, string|n
     return result;
 }
 
-/*
-function parsegid(gid: number, tilesets: Array<Readonly<TileSet>>) {
-    let realGid = gid & 0x0FFFFFFF;
-    return {
-        set: 0,
-        tile: 0,
-        flipX: gid & 0x80000000,
-        flipY: gid & 0x40000000,
-        flipZ: gid & 0x20000000,
-    }
-}
-*/
-
-function objToEntity(obj, layerIndex: number, xUnit: number, zUnit: number): RoomFeature|undefined {
+function objToFeature(obj: any, layerIndex: number, xUnit: number, zUnit: number): RoomFeature|undefined {
     if (obj.point === true) {
         let entity: PointRoomFeature = {
             type: "point",
@@ -187,12 +125,14 @@ function objToEntity(obj, layerIndex: number, xUnit: number, zUnit: number): Roo
         return;
     } else {
         // assume rect
+        let width = obj.width / xUnit;
+        let height = obj.height / zUnit;
         let entity: RectRoomFeature = {
             type: "rect",
-            x: obj.x / xUnit,
-            z: obj.y / zUnit,
-            width: obj.width / xUnit,
-            height: obj.height / zUnit,
+            x: (obj.x / xUnit) + (width / 2),
+            z: (obj.y / zUnit) + (height / 2),
+            width,
+            height,
             layerIndex,
             tiled_id: obj.id,
             name: obj.name,
@@ -270,7 +210,7 @@ export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*
                 });
                 let thisLayerIndex = result.layers.length-1;
                 layer.objects.forEach(obj => {
-                    let entity: RoomFeature|undefined = objToEntity(
+                    let entity: RoomFeature|undefined = objToFeature(
                         obj,
                         thisLayerIndex,
                         rawData.tilewidth,
@@ -284,6 +224,104 @@ export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*
         }
     }
     walkLayers(rawData.layers);
-    
     return result;
 }
+
+/*
+const objects: [
+    // point
+    {
+        type: "point", //point: true
+        name: "description",
+        properties: [], // TODO
+        class: "foo", // was "type"
+        x: 34.354, // NORMALIZE by tile size
+        z: 43.53, // NORMALIZE by tile size, was "y"
+    },
+    // ellipse
+    {
+        type: "ellipse", // ellipse: true
+        name: "description",
+        class: "foo", // was "type"
+        // assert rotation==0 for now
+        x: 3.43, // NORMALIZE by tile size and center by "width"
+        z: 42.42, // NORMALIZE by tile size and cetner by "height"
+        rx: 23.23, // half "width"
+        rz: 43.222, // half "height"
+    },
+    // polygon
+    {
+        type: "polygon", // polygon: [] exists
+        name: "description",
+        points: [ // from "polygon"
+            {
+                x: 34.5, // NORMALIZE by adding object.x, divide by tile size
+                z: 12.4 // was "y". NORMALIZE by adding object.y, divide by tile size
+            },
+        ],
+        // assert rotation==0
+        class: "collision", // was "type"
+
+    },
+    // polyline
+    {
+        type: "polyline", // polyline: [] exists
+        name: "description",
+        // assert rotation==0; not useful
+        class: "foo", // was "type"
+        points: [
+            {
+                x: 2.34, // (polyline[0].x - x) / tileWidth
+                z: 4.3 // (polyline[0].y - y) / tileHeight
+            }
+        ]
+    },
+    // image tile
+    {
+        type: "overlay", // has "gid"
+        height: 23, // NORMALIZE by tile size
+        width: 43.2, // NORMALIZE by tile size
+        x: 4.3, // NORMALIZE by tile size, center
+        z: 4.54, // was "y". NORMALIZE by tile size, center
+        // assert rotation==0 for now
+        tile: {
+            // GENERATE ME
+            // from gid, as with tile layer data
+        }
+    },
+    // text
+    {
+        type: "text", // has "text" key
+        // defaults:
+        // left top
+        // sans-serif 16px
+        // word-wrap
+        x: 4.3,
+        z: 5.5,
+        height: 43.5,
+        width: 35.2,
+        text: "hello world", // text.text
+        valign: "top", // text.halign
+        halign: "left", // text.valign
+        font: {
+            family: "sans-serif", // text.fontfamily
+            size: 16, // text.pixelsize
+            bold: false, // text.bold
+            // unused italic, strikeout, underline, kerning, wordwrap
+        }
+    },
+    // else rect
+    {
+        // id not useful
+        type: "rect", // generated
+        name: "description",
+        height: 5.5,
+        width: 4.5,
+        x: 89,
+        y: 83.53,
+        // assert rotation==0 for now
+        class: "doorway", // was "type"
+        properties: [],
+    },
+]
+*/
