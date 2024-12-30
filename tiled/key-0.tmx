@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="5" height="5" tilewidth="1" tileheight="1" infinite="0" nextlayerid="3" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.0" class="key" orientation="orthogonal" renderorder="right-down" width="11" height="7" tilewidth="1" tileheight="1" infinite="0" nextlayerid="4" nextobjectid="14">
+ <editorsettings>
+  <export target="../server/src/assets/key-0.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="marker.tsx"/>
- <layer id="1" name="walls" class="boolmap" width="5" height="5">
+ <layer id="1" name="walls" class="boolmap" width="11" height="7">
   <data encoding="csv">
-1,1,1,1,1,
-1,0,0,0,1,
-0,0,0,0,1,
-1,0,0,0,1,
-1,1,1,1,1
+1,1,1,1,1,1,1,1,1,1,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
  <objectgroup id="2" name="Objects">
-  <object id="2" name="return" type="portal" x="2" y="3" width="1" height="1"/>
-  <object id="3" name="key" type="key" x="2.5" y="1.49997">
+  <object id="2" name="exit" type="portal" x="7" y="3" width="1" height="1"/>
+  <object id="3" name="key" type="key" x="7" y="1">
+   <point/>
+  </object>
+  <object id="4" name="enter" type="door" x="0" y="3" width="1" height="1"/>
+  <object id="6" name="torch" type="torch" x="2" y="2">
+   <point/>
+  </object>
+  <object id="7" name="torch" type="torch" x="4" y="2">
+   <point/>
+  </object>
+  <object id="8" name="torch" type="torch" x="6" y="2">
+   <point/>
+  </object>
+  <object id="9" name="torch" type="torch" x="2" y="4">
+   <point/>
+  </object>
+  <object id="10" name="torch" type="torch" x="4" y="4">
+   <point/>
+  </object>
+  <object id="11" name="torch" type="torch" x="6" y="4">
+   <point/>
+  </object>
+  <object id="12" name="torch" type="torch" x="8" y="4">
+   <point/>
+  </object>
+  <object id="13" name="torch" type="torch" x="8" y="2">
    <point/>
   </object>
  </objectgroup>

@@ -1,61 +1,65 @@
 interface HasMetadata {
-    class: string,
-    properties: Record<string, string|number|boolean>,
+  class: string;
+  properties: Record<string, string | number | boolean>;
 }
 
 export interface CommonRoomFeature extends HasMetadata {
-    name: string,
-    x: number,
-    z: number, // was y
-    layerIndex: number,
-    tiled_id: number, // was id
-    // links: Record<string, number>,
-    // drop rotation, visible
+  name: string;
+  x: number;
+  z: number; // was y
+  layerIndex: number;
+  tiled_id: number; // was id
+  // links: Record<string, number>,
+  // drop rotation, visible
 }
-export interface BoolmapRoomFeature extends HasMetadata {
-    type: "map",
-    name: string,
-    data: boolean[][],
-    layerIndex: number,
+export interface BoolmapRoomFeature extends CommonRoomFeature {
+  type: "map";
+  name: string;
+  data: boolean[][];
+  layerIndex: number;
 }
 export interface PointRoomFeature extends CommonRoomFeature {
-    type: "point",
+  type: "point";
 }
 export interface RectRoomFeature extends CommonRoomFeature {
-    type: "rect", // doesn't match any other type
-    width: number,
-    height: number,
+  type: "rect"; // doesn't match any other type
+  width: number;
+  height: number;
 }
-export type RoomFeature = BoolmapRoomFeature | PointRoomFeature | RectRoomFeature;
+export type RoomFeature =
+  | BoolmapRoomFeature
+  | PointRoomFeature
+  | RectRoomFeature;
 // not implemented yet! tile, image ellipse, path, text
 
 export interface RoomLayer extends HasMetadata {
-    name: string,
-    tiled_id: number, // was "id"
-    type: "map" | "object" | "group", // others not implemented
-    parentIndex: number | null,
-    // drop paralax, offset, tint, locked, visible, opacity
+  name: string;
+  tiled_id: number; // was "id"
+  type: "map" | "object" | "group"; // others not implemented
+  parentIndex: number | null;
+  // drop paralax, offset, tint, locked, visible, opacity
 }
 
 export interface RoomDef extends HasMetadata {
-    height: number,
-    width: number,
-    features: RoomFeature[],
-    layers: RoomLayer[],
-    tilesets: []
-    // drop tilewidth/height for now; they're not very useful to us
+  height: number;
+  width: number;
+  features: RoomFeature[];
+  layers: RoomLayer[];
+  tilesets: [];
+  // drop tilewidth/height for now; they're not very useful to us
 }
 
 export type RealRoomFeature = RoomFeature & { id: string };
 export type RealRoom = {
-    id: string,
-    x: number,
-    z: number,
-    height: number,
-    width: number,
-    features: RealRoomFeature[],
-    layers: RoomLayer[],
-    tilesets: []
+  id: string;
+  x: number;
+  z: number;
+  class: string;
+  height: number;
+  width: number;
+  features: RealRoomFeature[];
+  layers: RoomLayer[];
+  tilesets: [];
 };
 
 /*

@@ -18,6 +18,7 @@ import {
   Direction,
   cAtomMoveSpeed,
   cAtomNearestSpawner,
+  sAtomSetPlayerPositions,
 } from "../../utils/atoms";
 import useRespawnBehaviour from "./useRespawnBehaviour";
 
@@ -44,12 +45,14 @@ export default function Player({ id }: PlayerProps) {
     ],
     [id]
   );
-
+  const lastUpdateRef = useRef(0);
   const [position, _setPosition] = useAtom(positionAtom);
   const [health, _setHealth] = useAtom(healthAtom);
   const [direction, setDirection] = useAtom(directionAtom);
   const [machineAtom] = useAtom(machineAtomAtom);
   const [state, _send] = useAtom(machineAtom);
+
+  const [, setServerPosition] = useAtom(sAtomSetPlayerPositions);
 
   const bodyRef = useRef<RapierRigidBody>(null!);
   const [, getInput] = useKeyboardControls();
@@ -61,7 +64,7 @@ export default function Player({ id }: PlayerProps) {
     console.log("player machine: ", state.value);
   }, [state]);
 
-  useFrame(() => {
+  useFrame(({ clock }, delta) => {
     if (!(state.matches("idle") || state.matches("walking"))) {
       return;
     }
@@ -87,6 +90,14 @@ export default function Player({ id }: PlayerProps) {
       direction = Direction.DOWN;
     }
     setDirection(direction);
+
+    // Throttle position updates
+    if (clock.getElapsedTime() - lastUpdateRef.current >= 0.05) {
+      setServerPosition([
+        { playerId: id, position: bodyRef.current.translation() },
+      ]);
+      lastUpdateRef.current = clock.getElapsedTime();
+    }
   });
 
   return (

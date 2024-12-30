@@ -1,161 +1,207 @@
-import { PointRoomFeature, RectRoomFeature, RoomDef, RoomFeature } from "@app/lib";
+import {
+  PointRoomFeature,
+  RectRoomFeature,
+  RoomDef,
+  RoomFeature,
+} from "@app/lib";
 
 // RAW JSON STRUCTURES
 interface TiledExternTileset {
-    firstgid: number,
-    source: string,
+  firstgid: number;
+  source: string;
 }
 interface TiledProperty {
-    name: string,
-    type: "bool" | "color" | "int" | "string" | "float" | "object",
-    value: number | string,
+  name: string;
+  type: "bool" | "color" | "int" | "string" | "float" | "object";
+  value: number | string;
+}
+interface TiledObject {
+  id: number;
+  name: string;
+  visible: boolean;
+  x: number;
+  y: number;
+
+  ellipse?: boolean;
+  gid?: number;
+  height?: number;
+  point?: boolean;
+  polygon?: unknown;
+  polyline?: unknown;
+  properties?: TiledProperty[];
+  rotation?: number;
+  template?: string;
+  text?: unknown;
+  type?: string;
+  class?: string;
+  width?: number;
 }
 interface TiledTileset {
-    firstgid: number,
-    name: string,
-    columns: number,
-    margin: number,
-    spacing: number,
-    tilecount: number,
-    tileheight: number, // assume these == map tileheight/width
-    tilewidth: number,
-    image?: string,
-    imageheight?: number,
-    imagewidth?: number,
-    class?: string,
-    tiles?: Array<{
-        id: number,
-        properties?: TiledProperty[],
-        type?: string, // class
-        x?: number,
-        y?: number,
-        height?: number,
-        width?: number,
-        image?: string,
-        imagewidth?: number,
-        imageheight?: number,
-    }>,
-    properties?: TiledProperty[],
-    // ignore tilerendersize -- assume it is always "tile"
-    // ignore objectalignment -- doesn't appear to have an affect!
+  firstgid: number;
+  name: string;
+  columns: number;
+  margin: number;
+  spacing: number;
+  tilecount: number;
+  tileheight: number; // assume these == map tileheight/width
+  tilewidth: number;
+  image?: string;
+  imageheight?: number;
+  imagewidth?: number;
+  class?: string;
+  tiles?: Array<{
+    id: number;
+    properties?: TiledProperty[];
+    type?: string; // class
+    x?: number;
+    y?: number;
+    height?: number;
+    width?: number;
+    image?: string;
+    imagewidth?: number;
+    imageheight?: number;
+  }>;
+  properties?: TiledProperty[];
+  // ignore tilerendersize -- assume it is always "tile"
+  // ignore objectalignment -- doesn't appear to have an affect!
 }
 interface TiledImageLayer {
-    type: "imagelayer",
-    id: number,
-    name: string,
-    image: string,
-    class?: string,
-    properties?: TiledProperty[],
-    // ignore opacity, visible, x, y, repeat
+  type: "imagelayer";
+  id: number;
+  name: string;
+  image: string;
+  class?: string;
+  properties?: TiledProperty[];
+  // ignore opacity, visible, x, y, repeat
 }
 interface TiledTileLayer {
-    type: "tilelayer",
-    id: number,
-    data: number[],
-    name: string,
-    class?: string,
-    properties?: TiledProperty[],
-    // ignore opacity, visible, x, y, width, height
+  type: "tilelayer";
+  id: number;
+  data: number[];
+  name: string;
+  class?: string;
+  properties?: TiledProperty[];
+  // ignore opacity, visible, x, y, width, height
 }
 interface TiledObjectLayer {
-    type: "objectgroup",
-    id: number,
-    objects: any[],
-    name: string,
-    class?: string,
-    properties?: TiledProperty[],
-    // ignore draworder, visible, x, y, opacity
+  type: "objectgroup";
+  id: number;
+  objects: TiledObject[];
+  name: string;
+  class?: string;
+  properties?: TiledProperty[];
+  // ignore draworder, visible, x, y, opacity
 }
 interface TiledGroupLayer {
-    type: "group",
-    id: number,
-    layers: Array<TiledGroupLayer|TiledObjectLayer|TiledTileLayer|TiledImageLayer>,
-    name: string,
-    class?: string,
-    properties?: TiledProperty[],
-    // ignore opacity, visible, x, y
+  type: "group";
+  id: number;
+  layers: Array<
+    TiledGroupLayer | TiledObjectLayer | TiledTileLayer | TiledImageLayer
+  >;
+  name: string;
+  class?: string;
+  properties?: TiledProperty[];
+  // ignore opacity, visible, x, y
 }
-type TiledLayer = TiledImageLayer | TiledTileLayer | TiledObjectLayer | TiledGroupLayer;
-interface TiledMap {
-    height: number,
-    width: number,
-    tileheight: number,
-    tilewidth: number,
-    layers: Array<TiledLayer>,
-    tilesets: Array<TiledExternTileset | TiledTileset>,
-    class?: string,
-    properties?: TiledProperty[],
-    orientation: "orthogonal", // not handling other types for now! (“isometric”, “staggered”, “hexagonal”)
-    version: "1.10",
-    // drop renderorder (irrelevant unless tileset tiles are larger than the map tiles)
+type TiledLayer =
+  | TiledImageLayer
+  | TiledTileLayer
+  | TiledObjectLayer
+  | TiledGroupLayer;
+export interface TiledMap {
+  height: number;
+  width: number;
+  tileheight: number;
+  tilewidth: number;
+  layers: Array<TiledLayer>;
+  tilesets: Array<TiledExternTileset | TiledTileset>;
+  class?: string;
+  properties?: TiledProperty[];
+  orientation: "orthogonal"; // not handling other types for now! (“isometric”, “staggered”, “hexagonal”)
+  version: "1.10";
+  // drop renderorder (irrelevant unless tileset tiles are larger than the map tiles)
 }
 //////////
 
-function flattenProps(properties: TiledProperty[] = []): Record<string, string|number|boolean> {
-    let result = {};
-    for (let prop of properties) {
-        if (prop.type === "object") continue; // handled separately
-        result[prop.name] = prop.value;
-    }
-    return result;
+function flattenProps(
+  properties: TiledProperty[] = []
+): Record<string, string | number | boolean> {
+  const result: Record<string, string | number | boolean> = {};
+  for (const prop of properties) {
+    if (prop.type === "object") continue; // handled separately
+    result[prop.name] = prop.value;
+  }
+  return result;
 }
 
-function objToFeature(obj: any, layerIndex: number, xUnit: number, zUnit: number): RoomFeature|undefined {
-    if (obj.point === true) {
-        let entity: PointRoomFeature = {
-            type: "point",
-            tiled_id: obj.id,
-            name: obj.name,
-            x: obj.x / xUnit,
-            z: obj.y / zUnit,
-            layerIndex,
-            class: obj.type || "",
-            properties: flattenProps(obj.properties),
-        };
-        return entity;
-    } else if (
-        obj.hasOwnProperty("text") ||
-        obj.hasOwnProperty("gid") ||
-        obj.hasOwnProperty("polyline") ||
-        obj.hasOwnProperty("polygon") ||
-        obj.hasOwnProperty("ellipse") ||
-        false
-    ) {
-        console.warn(`discarded unsupported object type`);
-        return;
-    } else {
-        // assume rect
-        let width = obj.width / xUnit;
-        let height = obj.height / zUnit;
-        let entity: RectRoomFeature = {
-            type: "rect",
-            x: (obj.x / xUnit) + (width / 2),
-            z: (obj.y / zUnit) + (height / 2),
-            width,
-            height,
-            layerIndex,
-            tiled_id: obj.id,
-            name: obj.name,
-            class: obj.type || "",
-            properties: flattenProps(obj.properties),
-        };
-        return entity;
-    }
-}
-
-export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*/): RoomDef {
-    // let entityIdMap: Record<number, number> = {};
-    let result: RoomDef = {
-        height: rawData.height,
-        width: rawData.width,
-        features: [],
-        layers: [],
-        tilesets: [],
-        class: rawData.class || "",
-        properties: flattenProps(rawData.properties),
+function objToFeature(
+  obj: TiledObject,
+  layerIndex: number,
+  xUnit: number,
+  zUnit: number
+): RoomFeature | undefined {
+  if (obj.point === true) {
+    const entity: PointRoomFeature = {
+      type: "point",
+      tiled_id: obj.id,
+      name: obj.name,
+      x: obj.x / xUnit,
+      z: obj.y / zUnit,
+      layerIndex,
+      class: obj.type || "",
+      properties: flattenProps(obj.properties),
     };
-    let tilesetStarts = [];
-    /*
+    return entity;
+  } else if (
+    "text" in obj ||
+    "gid" in obj ||
+    "polyline" in obj ||
+    "polygon" in obj ||
+    "ellipse" in obj ||
+    false
+  ) {
+    console.warn(`discarded unsupported object type`);
+    return;
+  } else {
+    // if no width or height, break
+    if (!("width" in obj) || !("height" in obj)) {
+      console.warn(`discarded unsupported object type`);
+      return;
+    }
+    // assume rect
+    const width = (obj.width as number) / xUnit;
+    const height = (obj.height as number) / zUnit;
+    const entity: RectRoomFeature = {
+      type: "rect",
+      x: obj.x / xUnit + width / 2,
+      z: obj.y / zUnit + height / 2,
+      width,
+      height,
+      layerIndex,
+      tiled_id: obj.id,
+      name: obj.name,
+      class: obj.type || "",
+      properties: flattenProps(obj.properties),
+    };
+    return entity;
+  }
+}
+
+export function parseMap(
+  rawData: TiledMap /*images: ImageCache = defaultCache*/
+): RoomDef {
+  // let entityIdMap: Record<number, number> = {};
+  const result: RoomDef = {
+    height: rawData.height,
+    width: rawData.width,
+    features: [],
+    layers: [],
+    tilesets: [],
+    class: rawData.class || "",
+    properties: flattenProps(rawData.properties),
+  };
+  // const tilesetStarts = [];
+  /*
     for (let record of rawData.tilesets) {
         if (record.hasOwnProperty("source")) {
             throw "can't handle external tilesets yet";
@@ -166,65 +212,69 @@ export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*
         }
     }
     */
-    function walkLayers(layers: Array<TiledLayer>, parent: number|null = null) {
-        for (let layer of layers) {
-            let commonLayerData = {
-                class: layer.class || "",
-                properties: flattenProps(layer.properties),
-                name: layer.name,
-                parentIndex: parent,
-                tiled_id: layer.id,
-            };
-            if (layer.type === "group") {
-                result.layers.push({
-                    ...commonLayerData,
-                    type: "group",
-                });
-                walkLayers(layer.layers, result.layers.length-1);
-            } else if (layer.type === "tilelayer" && layer.class === "boolmap") {
-                result.layers.push({
-                    ...commonLayerData,
-                    type: "map",
-                });
-                let bools = layer.data.map(gid => gid===0 ? false : true);
-                let data: boolean[][] = [];
-                for (let i = 0; i < result.height; i++) {
-                    data.push(
-                        bools.slice(i*result.width, (i+1)*result.width)
-                    );
-                }
-                result.features.push({
-                    type: "map",
-                    name: layer.name,
-                    data,
-                    layerIndex: result.layers.length-1,
-                    class: layer.class,
-                    properties: {},
-                });
-            } else if (layer.type === "tilelayer") {
-                console.warn(`discarded tileset-based map layer "${layer.name}" (not supported yet)`);
-            } else if (layer.type === "objectgroup") {
-                result.layers.push({
-                    ...commonLayerData,
-                    type: "object",
-                });
-                let thisLayerIndex = result.layers.length-1;
-                layer.objects.forEach(obj => {
-                    let entity: RoomFeature|undefined = objToFeature(
-                        obj,
-                        thisLayerIndex,
-                        rawData.tilewidth,
-                        rawData.tileheight,
-                    );
-                    if (entity) result.features.push(entity);
-                });
-            } else {
-                console.warn(`discarded unsupported layer type "${layer.type}"`);
-            }
+  function walkLayers(layers: Array<TiledLayer>, parent: number | null = null) {
+    for (const layer of layers) {
+      const commonLayerData = {
+        class: layer.class || "",
+        properties: flattenProps(layer.properties),
+        name: layer.name,
+        parentIndex: parent,
+        tiled_id: layer.id,
+      };
+      if (layer.type === "group") {
+        result.layers.push({
+          ...commonLayerData,
+          type: "group",
+        });
+        walkLayers(layer.layers, result.layers.length - 1);
+      } else if (layer.type === "tilelayer" && layer.class === "boolmap") {
+        result.layers.push({
+          ...commonLayerData,
+          type: "map",
+        });
+        const bools = layer.data.map(gid => (gid === 0 ? false : true));
+        const data: boolean[][] = [];
+        for (let i = 0; i < result.height; i++) {
+          data.push(bools.slice(i * result.width, (i + 1) * result.width));
         }
+        result.features.push({
+          type: "map",
+          name: layer.name,
+          data,
+          layerIndex: result.layers.length - 1,
+          class: layer.class,
+          properties: {},
+          // assuming boolmaps are always at 0,0
+          x: 0,
+          z: 0,
+          tiled_id: 0,
+        });
+      } else if (layer.type === "tilelayer") {
+        console.warn(
+          `discarded tileset-based map layer "${layer.name}" (not supported yet)`
+        );
+      } else if (layer.type === "objectgroup") {
+        result.layers.push({
+          ...commonLayerData,
+          type: "object",
+        });
+        const thisLayerIndex = result.layers.length - 1;
+        layer.objects.forEach(obj => {
+          const entity: RoomFeature | undefined = objToFeature(
+            obj,
+            thisLayerIndex,
+            rawData.tilewidth,
+            rawData.tileheight
+          );
+          if (entity) result.features.push(entity);
+        });
+      } else {
+        console.warn(`discarded unsupported layer type "${layer.type}"`);
+      }
     }
-    walkLayers(rawData.layers);
-    return result;
+  }
+  walkLayers(rawData.layers);
+  return result;
 }
 
 /*

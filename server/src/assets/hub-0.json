@@ -1,41 +1,112 @@
 { "class":"hub",
  "compressionlevel":-1,
- "height":5,
+ "height":11,
  "infinite":false,
  "layers":[
         {
          "class":"boolmap",
-         "data":[1, 1, 0, 1, 1,
-            1, 0, 0, 0, 1,
-            0, 0, 0, 0, 0,
-            1, 0, 0, 0, 1,
-            1, 1, 0, 1, 1],
-         "height":5,
+         "data":[1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+         "height":11,
          "id":1,
          "name":"walls",
          "opacity":1,
          "tintcolor":"#000000",
          "type":"tilelayer",
          "visible":true,
-         "width":5,
+         "width":11,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":6,
+         "name":"torches",
+         "objects":[
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":2,
+                 "y":2
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":9,
+                 "y":2
+                }, 
+                {
+                 "height":0,
+                 "id":12,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":9,
+                 "y":9
+                }, 
+                {
+                 "height":0,
+                 "id":13,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":2,
+                 "y":9
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
          "x":0,
          "y":0
         }, 
         {
          "class":"boolmap",
-         "data":[0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 1, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0],
-         "height":5,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":11,
          "id":4,
          "name":"pits",
          "opacity":1,
          "tintcolor":"#ff0000",
          "type":"tilelayer",
          "visible":true,
-         "width":5,
+         "width":11,
          "x":0,
          "y":0
         }, 
@@ -47,24 +118,36 @@
                 {
                  "height":1,
                  "id":1,
-                 "name":"puzzle2",
+                 "name":"puzzle",
+                 "properties":[
+                        {
+                         "name":"side",
+                         "type":"string",
+                         "value":"right"
+                        }],
                  "rotation":0,
-                 "type":"puzzle",
+                 "type":"door",
                  "visible":true,
                  "width":1,
-                 "x":4,
-                 "y":2
+                 "x":10,
+                 "y":5
                 }, 
                 {
                  "height":1,
                  "id":3,
-                 "name":"puzzle1",
+                 "name":"puzzle",
+                 "properties":[
+                        {
+                         "name":"side",
+                         "type":"string",
+                         "value":"left"
+                        }],
                  "rotation":0,
-                 "type":"puzzle",
+                 "type":"door",
                  "visible":true,
                  "width":1,
                  "x":0,
-                 "y":2
+                 "y":5
                 }, 
                 {
                  "height":1,
@@ -74,7 +157,7 @@
                  "type":"door",
                  "visible":true,
                  "width":1,
-                 "x":2,
+                 "x":5,
                  "y":0
                 }, 
                 {
@@ -85,8 +168,8 @@
                  "type":"door",
                  "visible":true,
                  "width":1,
-                 "x":2,
-                 "y":4
+                 "x":5,
+                 "y":10
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -108,8 +191,8 @@
                  "type":"spawn",
                  "visible":true,
                  "width":0,
-                 "x":2.5,
-                 "y":3.5
+                 "x":5,
+                 "y":5
                 }, 
                 {
                  "height":0,
@@ -120,8 +203,8 @@
                  "type":"portal",
                  "visible":true,
                  "width":0,
-                 "x":1.5,
-                 "y":1.5
+                 "x":2,
+                 "y":8
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -129,8 +212,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":10,
+ "nextlayerid":7,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -149,5 +232,5 @@
  "tilewidth":1,
  "type":"map",
  "version":"1.10",
- "width":5
+ "width":11
 }

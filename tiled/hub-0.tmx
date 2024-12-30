@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" class="hub" orientation="orthogonal" renderorder="right-down" width="5" height="5" tilewidth="1" tileheight="1" infinite="0" nextlayerid="6" nextobjectid="10">
+<map version="1.10" tiledversion="1.11.0" class="hub" orientation="orthogonal" renderorder="right-down" width="11" height="11" tilewidth="1" tileheight="1" infinite="0" nextlayerid="7" nextobjectid="14">
  <editorsettings>
   <export target="../server/src/assets/hub-0.json" format="json"/>
  </editorsettings>
@@ -7,35 +7,69 @@
   <property name="branches" type="int" value="2"/>
  </properties>
  <tileset firstgid="1" source="marker.tsx"/>
- <layer id="1" name="walls" class="boolmap" width="5" height="5" tintcolor="#000000">
+ <layer id="1" name="walls" class="boolmap" width="11" height="11" tintcolor="#000000">
   <data encoding="csv">
-1,1,0,1,1,
-1,0,0,0,1,
-0,0,0,0,0,
-1,0,0,0,1,
-1,1,0,1,1
+1,1,1,1,1,0,1,1,1,1,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+0,0,0,0,0,0,0,0,0,0,0,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,1,
+1,1,1,1,1,0,1,1,1,1,1
 </data>
  </layer>
- <layer id="4" name="pits" class="boolmap" width="5" height="5" tintcolor="#ff0000">
+ <objectgroup id="6" name="torches">
+  <object id="10" type="torch" x="2" y="2">
+   <point/>
+  </object>
+  <object id="11" type="torch" x="9" y="2">
+   <point/>
+  </object>
+  <object id="12" type="torch" x="9" y="9">
+   <point/>
+  </object>
+  <object id="13" type="torch" x="2" y="9">
+   <point/>
+  </object>
+ </objectgroup>
+ <layer id="4" name="pits" class="boolmap" width="11" height="11" tintcolor="#ff0000">
   <data encoding="csv">
-0,0,0,0,0,
-0,0,0,0,0,
-0,0,1,0,0,
-0,0,0,0,0,
-0,0,0,0,0
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,1,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
  <objectgroup id="2" name="doors">
-  <object id="1" name="puzzle2" type="puzzle" x="4" y="2" width="1" height="1"/>
-  <object id="3" name="puzzle1" type="puzzle" x="0" y="2" width="1" height="1"/>
-  <object id="4" name="exit" type="door" x="2" y="0" width="1" height="1"/>
-  <object id="8" name="enter" type="door" x="2" y="4" width="1" height="1"/>
+  <object id="1" name="puzzle" type="door" x="10" y="5" width="1" height="1">
+   <properties>
+    <property name="side" value="right"/>
+   </properties>
+  </object>
+  <object id="3" name="puzzle" type="door" x="0" y="5" width="1" height="1">
+   <properties>
+    <property name="side" value="left"/>
+   </properties>
+  </object>
+  <object id="4" name="exit" type="door" x="5" y="0" width="1" height="1"/>
+  <object id="8" name="enter" type="door" x="5" y="10" width="1" height="1"/>
  </objectgroup>
  <objectgroup id="3" name="portals">
-  <object id="7" name="player" type="spawn" x="2.5" y="3.5">
+  <object id="7" name="player" type="spawn" x="5" y="5">
    <point/>
   </object>
-  <object id="9" name="skip" type="portal" x="1.5" y="1.5">
+  <object id="9" name="skip" type="portal" x="2" y="8">
    <point/>
   </object>
  </objectgroup>

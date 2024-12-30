@@ -69,8 +69,8 @@ export function usePlayerEntity() {
   const [_nearestSpawner, setNearestSpawner] = useAtom(cAtomNearestSpawner);
 
   const createEntity = useCallback(
-    (pos: Vector3, nearestSpawner: string) => {
-      const id = nanoid();
+    (pos: Vector3, nearestSpawner: string, existingId?: string | null) => {
+      const id = existingId || nanoid();
       const machineAtom = atomWithMachine(createPlayerMachine(id));
       addComponent(id, "player", setType);
       addComponent(id, pos, setPosition);
@@ -88,6 +88,25 @@ export function usePlayerEntity() {
       setMoveSpeed,
       setNearestSpawner,
     ]
+  );
+
+  const updateEntity = useCallback(
+    (
+      id: string,
+      data: {
+        position?: Vector3;
+        direction?: Direction;
+        moveSpeed?: number;
+        nearestSpawner?: string;
+      }
+    ) => {
+      if (data.position) addComponent(id, data.position, setPosition);
+      if (data.direction) addComponent(id, data.direction, setDirection);
+      if (data.moveSpeed) addComponent(id, data.moveSpeed, setMoveSpeed);
+      if (data.nearestSpawner)
+        addComponent(id, data.nearestSpawner, setNearestSpawner);
+    },
+    [setPosition, setDirection, setMoveSpeed, setNearestSpawner]
   );
 
   const destroyEntity = useCallback(
@@ -109,5 +128,5 @@ export function usePlayerEntity() {
     ]
   );
 
-  return { createEntity, destroyEntity };
+  return { createEntity, destroyEntity, updateEntity };
 }

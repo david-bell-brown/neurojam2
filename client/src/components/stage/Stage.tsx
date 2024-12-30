@@ -1,5 +1,5 @@
 import { RigidBody } from "@react-three/rapier";
-import { Wall, WallBody } from "../wall/Wall";
+import { Wall, WallBody } from "../walls/Walls";
 
 const tiles = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

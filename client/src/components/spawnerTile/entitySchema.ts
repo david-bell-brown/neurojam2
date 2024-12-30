@@ -1,6 +1,5 @@
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { atomWithMachine } from "jotai-xstate";
-import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { setup } from "xstate";
 import { addComponent, removeComponent } from "../../lib/ecs";
@@ -9,8 +8,27 @@ import {
   cAtomPosition,
   cAtomSpawnerMachine,
   cAtomPositionCallbacks,
+  cAtomInGroup,
 } from "../../utils/atoms";
 import { Vector3 } from "@react-three/fiber";
+import { PointRoomFeature, RealRoomFeature } from "@app/lib";
+import { dreiVec } from "../../utils/vector";
+
+type SpawnerFeature = PointRoomFeature & {
+  id: string;
+  class: "spawn";
+};
+
+export function getSpawnerFeatures(
+  features: RealRoomFeature[]
+): SpawnerFeature[] {
+  const spawnerFeatures = features.filter(
+    (feature): feature is RealRoomFeature & { type: "point"; class: "spawn" } =>
+      feature.type === "point" && feature.class === "spawn"
+  ) as SpawnerFeature[];
+
+  return spawnerFeatures;
+}
 
 const createSpawnMachine = (id: string, initialState: "idle" | "spawning") =>
   setup({}).createMachine({
@@ -36,28 +54,31 @@ const createSpawnMachine = (id: string, initialState: "idle" | "spawning") =>
 export type SpawnMachine = ReturnType<typeof createSpawnMachine>;
 
 export function useSpawnerEntity() {
-  const [, setType] = useAtom(cAtomType);
-  const [, setPosition] = useAtom(cAtomPosition);
-  const [, setMachine] = useAtom(cAtomSpawnerMachine);
-  const [, setCallback] = useAtom(cAtomPositionCallbacks);
+  const setType = useSetAtom(cAtomType);
+  const setPosition = useSetAtom(cAtomPosition);
+  const setMachine = useSetAtom(cAtomSpawnerMachine);
+  const setCallback = useSetAtom(cAtomPositionCallbacks);
+  const setInGroup = useSetAtom(cAtomInGroup);
 
   const createEntity = useCallback(
     (
-      pos: Vector3,
+      feature: SpawnerFeature,
+      groupId: string,
       callback: (spawnerId: string, pos: Vector3) => void,
       immediate = false
     ) => {
-      const id = nanoid();
+      const { id, x, z } = feature;
       const machineAtom = atomWithMachine(
         createSpawnMachine(id, immediate ? "spawning" : "idle")
       );
       addComponent(id, "spawner", setType);
-      addComponent(id, pos, setPosition);
+      addComponent(id, dreiVec({ x, z }), setPosition);
       addComponent(id, machineAtom, setMachine);
       addComponent(id, [callback], setCallback);
+      addComponent(id, groupId, setInGroup);
       return id;
     },
-    [setType, setPosition, setMachine, setCallback]
+    [setType, setPosition, setMachine, setCallback, setInGroup]
   );
 
   const destroyEntity = useCallback(
@@ -66,8 +87,9 @@ export function useSpawnerEntity() {
       removeComponent(id, setPosition);
       removeComponent(id, setMachine);
       removeComponent(id, setCallback);
+      removeComponent(id, setInGroup);
     },
-    [setType, setPosition, setMachine, setCallback]
+    [setType, setPosition, setMachine, setCallback, setInGroup]
   );
 
   return { createEntity, destroyEntity };

@@ -7,7 +7,7 @@ import {
 } from "../../utils/atoms";
 import { focusAtom } from "jotai-optics";
 import { useCallback, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+// import { useFrame } from "@react-three/fiber";
 import {
   CollisionPayload,
   CuboidCollider,
@@ -21,21 +21,24 @@ export default function Enemy({ id }: { id: string }) {
     return [position, health];
   }, [id]);
 
-  const [position, setPosition] = useAtom(positionAtom);
+  const [position, _setPosition] = useAtom(positionAtom);
   const [health, _setHealth] = useAtom(healthAtom);
   const [otherMachines] = useAtom(cAtomPlayerMachine);
   const [, sendProxy] = useAtom(sendProxyAtom);
 
-  useFrame(state => {
-    setPosition([
-      Math.sin(state.clock.getElapsedTime()) * 5,
-      position[1],
-      position[2],
-    ]);
-  });
+  // useFrame(state => {
+  //   setPosition([
+  //     Math.sin(state.clock.getElapsedTime()) * 5,
+  //     position[1],
+  //     position[2],
+  //   ]);
+  // });
 
   const onIntersectionEnter = useCallback(
     ({ other }: CollisionPayload) => {
+      if (!other.rigidBodyObject) {
+        return;
+      }
       console.log("Collision", other.rigidBodyObject.name);
       if (otherMachines[other.rigidBodyObject.name]) {
         const machine = otherMachines[other.rigidBodyObject.name];

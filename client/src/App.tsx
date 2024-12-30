@@ -1,6 +1,5 @@
-import { Canvas, Vector3 } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import "./App.css";
-import { Stage } from "./components/stage/Stage";
 import {
   Grid,
   KeyboardControls,
@@ -8,15 +7,9 @@ import {
   OrbitControls,
 } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
-import { Suspense, useCallback, useEffect } from "react";
-import Player from "./components/player/Player";
-import { useAtomValue } from "jotai";
-import { cAtomType } from "./utils/atoms";
-import Enemy from "./components/enemy/Enemy";
-import { useEnemyEntity } from "./components/enemy/entitySchema";
-import { usePlayerEntity } from "./components/player/entitySchema";
-import { useSpawnerEntity } from "./components/spawnerTile/entitySchema";
-import SpawnerTile from "./components/spawnerTile/SpawnerTile";
+import { Suspense } from "react";
+import Ghost from "./components/ghost/Ghost";
+import World from "./components/world/World";
 
 enum Controls {
   moveUp = "moveUp",
@@ -32,45 +25,7 @@ const controlMap: KeyboardControlsEntry<Controls>[] = [
   { name: Controls.moveRight, keys: ["ArrowRight", "KeyD"] },
 ];
 
-const TypeRenderMap = {
-  player: Player,
-  enemy: Enemy,
-  spawner: SpawnerTile,
-};
-
 function App() {
-  const entities = useAtomValue(cAtomType);
-  const { createEntity: createPlayer, destroyEntity: _destroyPlayer } =
-    usePlayerEntity();
-  const { createEntity: createEnemyEntity, destroyEntity: destroyEnemyEntity } =
-    useEnemyEntity();
-  const {
-    createEntity: createSpawnerEntity,
-    destroyEntity: destroySpawnerEntity,
-  } = useSpawnerEntity();
-
-  const spawnerCallback = useCallback(
-    (spawnerId: string, pos: Vector3) => {
-      createPlayer(pos, spawnerId);
-    },
-    [createPlayer]
-  );
-
-  useEffect(() => {
-    const id1 = createEnemyEntity([-1, 0, 1], 5);
-    const spawnerId = createSpawnerEntity([0, 0, -2], spawnerCallback, true);
-    return () => {
-      destroyEnemyEntity(id1);
-      destroySpawnerEntity(spawnerId);
-    };
-  }, [
-    createEnemyEntity,
-    createSpawnerEntity,
-    destroyEnemyEntity,
-    destroySpawnerEntity,
-    spawnerCallback,
-  ]);
-
   return (
     <KeyboardControls map={controlMap}>
       <div id="canvas-container">
@@ -86,15 +41,7 @@ function App() {
           <OrbitControls />
           <Suspense>
             <Physics debug>
-              <Stage />
-              {Object.entries(entities).map(([id, type]) => {
-                if (!TypeRenderMap[type]) {
-                  return null;
-                }
-                const Component =
-                  TypeRenderMap[type as keyof typeof TypeRenderMap];
-                return <Component key={id} id={id} />;
-              })}
+              <World />
               <Grid
                 cellSize={1}
                 cellThickness={1}
@@ -104,6 +51,7 @@ function App() {
                 infiniteGrid
               />
             </Physics>
+            <Ghost />
           </Suspense>
         </Canvas>
       </div>

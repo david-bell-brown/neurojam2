@@ -22,6 +22,65 @@
         }, 
         {
          "draworder":"topdown",
+         "id":3,
+         "name":"torches",
+         "objects":[
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":3,
+                 "y":1
+                }, 
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":3,
+                 "y":3
+                }, 
+                {
+                 "height":0,
+                 "id":6,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":1,
+                 "y":3
+                }, 
+                {
+                 "height":0,
+                 "id":4,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"torch",
+                 "visible":true,
+                 "width":0,
+                 "x":1,
+                 "y":1
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":2,
          "name":"doors",
          "objects":[
@@ -52,9 +111,32 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":7,
+                 "name":"player",
+                 "point":true,
+                 "rotation":0,
+                 "type":"spawn",
+                 "visible":true,
+                 "width":0,
+                 "x":2.5,
+                 "y":2.5
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":3,
- "nextobjectid":3,
+ "nextlayerid":5,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
