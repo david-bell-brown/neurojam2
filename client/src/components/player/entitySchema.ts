@@ -3,7 +3,7 @@ import { Vector3 } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import {
   cAtomDirection,
-  cAtomMachine,
+  cAtomPlayerMachine,
   cAtomPosition,
   cAtomType,
   Direction,
@@ -54,7 +54,7 @@ export function usePlayerEntity() {
   const [_type, setType] = useAtom(cAtomType);
   const [_position, setPosition] = useAtom(cAtomPosition);
   const [_direction, setDirection] = useAtom(cAtomDirection);
-  const [_machine, setMachine] = useAtom(cAtomMachine);
+  const [_machine, setMachine] = useAtom(cAtomPlayerMachine);
   const [_moveSpeed, setMoveSpeed] = useAtom(cAtomMoveSpeed);
 
   const createEntity = useCallback(

@@ -4,6 +4,7 @@ import { atomWithMachine, RESTART } from "jotai-xstate";
 import { atom, WritableAtom } from "jotai";
 import { AnyEventObject } from "xstate";
 import { PlayerMachine } from "../components/player/entitySchema";
+import { SpawnMachine } from "../components/spawnerTile/entitySchema";
 
 export enum Direction {
   DOWN = "down",
@@ -40,6 +41,9 @@ export const cAtomType = cAtomStore<string>();
 export const cAtomPosition = cAtomStore<Vector3>();
 export const cAtomHealth = cAtomStore<number>();
 export const cAtomDirection = cAtomStore<Direction>();
-export const cAtomMachine =
+export const cAtomPlayerMachine =
   cAtomStore<ReturnType<typeof atomWithMachine<PlayerMachine>>>();
+export const cAtomSpawnerMachine =
+  cAtomStore<ReturnType<typeof atomWithMachine<SpawnMachine>>>();
 export const cAtomMoveSpeed = cAtomStore<number>();
+export const cAtomCallback = cAtomStore<(_args: unknown) => void>();

@@ -1,4 +1,4 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, Vector3 } from "@react-three/fiber";
 import "./App.css";
 import { Stage } from "./components/stage/Stage";
 import {
@@ -8,13 +8,15 @@ import {
   OrbitControls,
 } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
-import { Suspense, useEffect } from "react";
+import { Suspense, useCallback, useEffect } from "react";
 import Player from "./components/player/Player";
 import { useAtomValue } from "jotai";
 import { cAtomType } from "./utils/atoms";
 import Enemy from "./components/enemy/Enemy";
 import { useEnemyEntity } from "./components/enemy/entitySchema";
 import { usePlayerEntity } from "./components/player/entitySchema";
+import { useSpawnerEntity } from "./components/spawnerTile/entitySchema";
+import SpawnerTile from "./components/spawnerTile/SpawnerTile";
 
 enum Controls {
   moveUp = "moveUp",
@@ -33,6 +35,7 @@ const controlMap: KeyboardControlsEntry<Controls>[] = [
 const TypeRenderMap = {
   player: Player,
   enemy: Enemy,
+  spawner: SpawnerTile,
 };
 
 function App() {
@@ -41,15 +44,34 @@ function App() {
     usePlayerEntity();
   const { createEntity: createEnemyEntity, destroyEntity: destroyEnemyEntity } =
     useEnemyEntity();
+  const {
+    createEntity: createSpawnerEntity,
+    destroyEntity: destroySpawnerEntity,
+  } = useSpawnerEntity();
+
+  const spawnerCallback = useCallback(
+    (pos: Vector3) => {
+      createPlayer(pos);
+    },
+    [createPlayer]
+  );
 
   useEffect(() => {
-    const playerId = createPlayer([0, 0, 0]);
     const id1 = createEnemyEntity([-1, 0, 1], 5);
+    const spawnerId = createSpawnerEntity([0, 0, 0], spawnerCallback, true);
     return () => {
-      destroyPlayer(playerId);
       destroyEnemyEntity(id1);
+      destroySpawnerEntity(spawnerId);
     };
-  }, [createEnemyEntity, createPlayer, destroyEnemyEntity, destroyPlayer]);
+  }, [
+    createEnemyEntity,
+    createPlayer,
+    createSpawnerEntity,
+    destroyEnemyEntity,
+    destroyPlayer,
+    destroySpawnerEntity,
+    spawnerCallback,
+  ]);
 
   return (
     <KeyboardControls map={controlMap}>

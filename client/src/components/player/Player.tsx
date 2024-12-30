@@ -13,7 +13,7 @@ import { focusAtom } from "jotai-optics";
 import {
   cAtomDirection,
   cAtomHealth,
-  cAtomMachine,
+  cAtomPlayerMachine,
   cAtomPosition,
   Direction,
   cAtomMoveSpeed,
@@ -30,14 +30,16 @@ export default function Player({ id }: PlayerProps) {
     directionAtom,
     machineAtomAtom,
     moveSpeedAtom,
-  ] = useMemo(() => {
-    const position = focusAtom(cAtomPosition, optic => optic.prop(id));
-    const health = focusAtom(cAtomHealth, optic => optic.prop(id));
-    const direction = focusAtom(cAtomDirection, optic => optic.prop(id));
-    const machine = focusAtom(cAtomMachine, optic => optic.prop(id));
-    const moveSpeed = focusAtom(cAtomMoveSpeed, optic => optic.prop(id));
-    return [position, health, direction, machine, moveSpeed];
-  }, [id]);
+  ] = useMemo(
+    () => [
+      focusAtom(cAtomPosition, optic => optic.prop(id)),
+      focusAtom(cAtomHealth, optic => optic.prop(id)),
+      focusAtom(cAtomDirection, optic => optic.prop(id)),
+      focusAtom(cAtomPlayerMachine, optic => optic.prop(id)),
+      focusAtom(cAtomMoveSpeed, optic => optic.prop(id)),
+    ],
+    [id]
+  );
 
   const [position, _setPosition] = useAtom(positionAtom);
   const [health, _setHealth] = useAtom(healthAtom);
@@ -55,6 +57,9 @@ export default function Player({ id }: PlayerProps) {
 
   useFrame(() => {
     if (state.matches("dead")) {
+      return;
+    }
+    if (!bodyRef.current) {
       return;
     }
     const { moveUp, moveDown, moveLeft, moveRight } = getInput();
