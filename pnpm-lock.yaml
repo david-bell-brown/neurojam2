@@ -137,6 +137,9 @@ importers:
       '@trpc/server':
         specifier: 10.45.2
         version: 10.45.2
+      nanoid:
+        specifier: ^5.0.9
+        version: 5.0.9
       ws:
         specifier: ^8.18.0
         version: 8.18.0
