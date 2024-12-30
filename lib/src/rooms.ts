@@ -72,11 +72,6 @@ export interface TileSet extends HasMetadata {
     name: string,
     tiles: Tile[],
 }
-export interface ImageCache {
-    getKey: (url: string) => string|number|null,
-    get: (key: string|number) => any,
-    store: (img: { url: string, width: number, height: number }) => string|number,
-}
 
 interface TileRef {
     setIndex: number,

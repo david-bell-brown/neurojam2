@@ -324,4 +324,105 @@ const objects: [
         properties: [],
     },
 ]
+
+
+export interface ImageCache {
+    getKey: (url: string) => string|number|null,
+    get: (key: string|number) => any,
+    store: (img: { url: string, width: number, height: number }) => string|number,
+}
+
+let images = [];
+let defaultCache: ImageCache = {
+    getKey(url) {
+        return images.findIndex(img => img.url === url);
+    },
+    get(key) {
+        return images[key];
+    },
+    store({ url, width, height }) {
+        let key = this.getKey(url);
+        if (key === -1) {
+            images.push({ url, width, height });
+            key = images.length-1;
+        }
+        return key;
+    },
+}
+
+function extractTileMeta(tileDef) {
+    return {
+        class: tileDef.type || "",
+        properties: flattenProps(tileDef.properties),
+    };
+}
+export function parseTileset(set: TiledTileset, images: ImageCache = defaultCache): Readonly<TileSet> {
+    const tiles: Tile[] = [];
+    if (set.columns > 0) {
+        // one image sliced for all tiles in this set
+        let imageKey = images.store({
+            url: set.image,
+            width: set.imagewidth,
+            height: set.imageheight,
+        });
+        // only tiles with metadata appear in set.tiles
+        let tileDefs = {};
+        for (let tile of set.tiles) {
+            tileDefs[tile.id] = tile;
+        }
+        // tilecount always has complete coverage
+        for (let i = 0; i < set.tilecount; i++) {
+            let col = i % set.columns;
+            let row = Math.floor(i / set.columns);
+            tiles.push({
+                image: {
+                    index: imageKey,
+                    x: set.margin + col*(set.tilewidth + set.spacing),
+                    y: set.margin + row*(set.tileheight + set.spacing),
+                    width: set.tilewidth,
+                    height: set.tileheight
+                },
+                ...extractTileMeta(tileDefs[i] || {})
+            });
+        }
+    } else {
+        // "collection" mode
+        // one image per tile
+        // tiles may not have contiguous IDs, but should all be defined in tileDefs
+        for (let tileDef of set.tiles) {
+            let imageKey = images.store({
+                url: tileDef.image,
+                width: tileDef.imagewidth,
+                height: tileDef.imageheight,
+            });
+            tiles[tileDef.id] = {
+                image: {
+                    index: imageKey,
+                    x: tileDef.x || 0,
+                    y: tileDef.y || 0,
+                    width: tileDef.width || tileDef.imagewidth || set.tilewidth,
+                    height: tileDef.height || tileDef.imageheight || set.tileheight,
+                },
+                ...extractTileMeta(tileDef)
+            };
+        }
+    }
+    return {
+        name: set.name,
+        tiles,
+        class: set.class || "",
+        properties: flattenProps(set.properties),
+    };
+}
+
+function parsegid(gid: number, tilesets: Array<Readonly<TileSet>>) {
+    let realGid = gid & 0x0FFFFFFF;
+    return {
+        set: 0,
+        tile: 0,
+        flipX: gid & 0x80000000,
+        flipY: gid & 0x40000000,
+        flipZ: gid & 0x20000000,
+    }
+}
 */
