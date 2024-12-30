@@ -94,37 +94,36 @@ export interface HasMetadata {
     properties: Record<string, string|number>,
 }
 
-export interface Entity {
-    type: string,
+
+export interface CommonRoomFeature extends HasMetadata {
+    name: string,
     x: number,
     z: number, // was y
     layerIndex: number,
+    tiled_id: number, // was id
+    // links: Record<string, number>,
+    // drop rotation, visible
 }
-export interface BoolmapEntity extends HasMetadata {
+export interface BoolmapRoomFeature extends HasMetadata {
     type: "map",
     name: string,
     data: boolean[][],
     layerIndex: number,
 }
-export interface ObjectEntity extends Entity, HasMetadata {
-    tiled_id: number, // was id
-    name: string,
-    // links: Record<string, number>,
-    // drop rotation, visible
 }
 
-export interface PointEntity extends ObjectEntity {
+export interface PointRoomFeature extends CommonRoomFeature {
     type: "point",
 }
-export interface RectEntity extends ObjectEntity {
+export interface RectRoomFeature extends CommonRoomFeature {
     type: "rect", // doesn't match any other type
     width: number,
     height: number,
 }
-export type AnyEntity = BoolmapEntity | PointEntity | RectEntity;
+export type RoomFeature = BoolmapRoomFeature | PointRoomFeature | RectRoomFeature;
 // not implemented yet! TileEntity | ImageEntity | EllipseEntity | PathEntity | TextEntity
 
-export interface MapLayer extends HasMetadata {
+export interface RoomLayer extends HasMetadata {
     name: string,
     tiled_id: number, // was "id"
     type: "map" | "object" | "group", // others not implemented
@@ -132,11 +131,11 @@ export interface MapLayer extends HasMetadata {
     // drop paralax, offset, tint, locked, visible, opacity
 }
 
-export interface ParsedMap extends HasMetadata {
+export interface RoomDef extends HasMetadata {
     height: number,
     width: number,
-    entities: AnyEntity[],
-    layers: MapLayer[],
+    features: RoomFeature[],
+    layers: RoomLayer[],
     tilesets: [], // TileSet[]
     // drop tilewidth/height for now; they're not very useful to us
 }
@@ -163,10 +162,9 @@ function parsegid(gid: number, tilesets: Array<Readonly<TileSet>>) {
 }
 */
 
-function objToEntity(obj, layerIndex: number, xUnit: number, zUnit: number): AnyEntity {
-
+function objToEntity(obj, layerIndex: number, xUnit: number, zUnit: number): RoomFeature|undefined {
     if (obj.point === true) {
-        let entity: PointEntity = {
+        let entity: PointRoomFeature = {
             type: "point",
             tiled_id: obj.id,
             name: obj.name,
@@ -189,7 +187,7 @@ function objToEntity(obj, layerIndex: number, xUnit: number, zUnit: number): Any
         return;
     } else {
         // assume rect
-        let entity: RectEntity = {
+        let entity: RectRoomFeature = {
             type: "rect",
             x: obj.x / xUnit,
             z: obj.y / zUnit,
@@ -205,12 +203,12 @@ function objToEntity(obj, layerIndex: number, xUnit: number, zUnit: number): Any
     }
 }
 
-export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*/): ParsedMap {
+export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*/): RoomDef {
     // let entityIdMap: Record<number, number> = {};
-    let result: ParsedMap = {
+    let result: RoomDef = {
         height: rawData.height,
         width: rawData.width,
-        entities: [],
+        features: [],
         layers: [],
         tilesets: [],
         class: rawData.class || "",
@@ -249,13 +247,13 @@ export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*
                     type: "map",
                 });
                 let bools = layer.data.map(gid => gid===0 ? false : true);
-                let data = [];
+                let data: boolean[][] = [];
                 for (let i = 0; i < result.height; i++) {
                     data.push(
                         bools.slice(i*result.width, (i+1)*result.width)
                     );
                 }
-                result.entities.push({
+                result.features.push({
                     type: "map",
                     name: layer.name,
                     data,
@@ -272,13 +270,13 @@ export function parseMap(rawData: TiledMap, /*images: ImageCache = defaultCache*
                 });
                 let thisLayerIndex = result.layers.length-1;
                 layer.objects.forEach(obj => {
-                    let entity: AnyEntity = objToEntity(
+                    let entity: RoomFeature|undefined = objToEntity(
                         obj,
                         thisLayerIndex,
                         rawData.tilewidth,
                         rawData.tileheight,
                     );
-                    if (entity) result.entities.push(entity);
+                    if (entity) result.features.push(entity);
                 });
             } else {
                 console.warn(`discarded unsupported layer type "${layer.type}"`);
