@@ -1,0 +1,18 @@
+{ "columns":0,
+ "margin":0,
+ "name":"marker",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.11.0",
+ "tileheight":1,
+ "tiles":[
+        {
+         "id":0,
+         "image":"..\/..\/..\/tiled\/pixel.png",
+         "imageheight":1,
+         "imagewidth":1
+        }],
+ "tilewidth":1,
+ "type":"tileset",
+ "version":"1.10"
+}

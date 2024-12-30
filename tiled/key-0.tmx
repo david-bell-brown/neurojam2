@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="5" height="5" tilewidth="1" tileheight="1" infinite="0" nextlayerid="3" nextobjectid="4">
+ <tileset firstgid="1" source="marker.tsx"/>
+ <layer id="1" name="walls" width="5" height="5">
+  <data encoding="csv">
+1,1,1,1,1,
+1,0,0,0,1,
+0,0,0,0,1,
+1,0,0,0,1,
+1,1,1,1,1
+</data>
+ </layer>
+ <objectgroup id="2" name="Objects">
+  <object id="2" name="return" type="portal" x="2" y="3" width="1" height="1"/>
+  <object id="3" name="key" type="key" x="2.5" y="1.49997">
+   <point/>
+  </object>
+ </objectgroup>
+</map>

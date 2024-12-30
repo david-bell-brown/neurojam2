@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" class="puzzle" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="1" tileheight="1" infinite="0" nextlayerid="5" nextobjectid="9">
+ <properties>
+  <property name="difficulty" type="int" value="1"/>
+ </properties>
+ <tileset firstgid="1" source="marker.tsx"/>
+ <layer id="1" name="walls" width="10" height="10" tintcolor="#000000">
+  <data encoding="csv">
+1,1,1,1,1,1,1,1,1,1,
+1,0,0,1,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,
+1,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,1,
+0,0,0,0,0,0,0,0,0,1,
+1,1,1,1,1,1,1,1,1,1
+</data>
+ </layer>
+ <layer id="2" name="pits" width="10" height="10" tintcolor="#83ff0000">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,1,0,0,0,1,1,1,0,0,
+0,0,0,1,1,1,0,1,1,0,
+0,0,0,0,0,0,0,1,0,0,
+0,1,1,1,1,0,1,1,0,0,
+0,1,0,0,0,0,0,1,0,0,
+0,1,1,1,1,0,1,1,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="torches">
+  <object id="5" type="torch" x="1.5" y="1.5">
+   <properties>
+    <property name="list" type="bool" value="false"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="6" type="torch" x="2.50077" y="6.5">
+   <properties>
+    <property name="lit" type="bool" value="true"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="7" type="torch" x="8.5" y="6.5">
+   <properties>
+    <property name="list" type="bool" value="false"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="8" type="torch" x="6.5" y="3.5">
+   <properties>
+    <property name="lit" type="bool" value="false"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="doors">
+  <object id="1" name="exit" type="door" x="9" y="2" width="1" height="1"/>
+  <object id="2" name="enter" type="door" x="0" y="7.99912" width="1" height="1"/>
+ </objectgroup>
+</map>

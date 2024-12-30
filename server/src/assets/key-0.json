@@ -1,0 +1,70 @@
+{ "compressionlevel":-1,
+ "height":5,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[1, 1, 1, 1, 1,
+            1, 0, 0, 0, 1,
+            0, 0, 0, 0, 1,
+            1, 0, 0, 0, 1,
+            1, 1, 1, 1, 1],
+         "height":5,
+         "id":1,
+         "name":"walls",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Objects",
+         "objects":[
+                {
+                 "height":1,
+                 "id":2,
+                 "name":"return",
+                 "rotation":0,
+                 "type":"portal",
+                 "visible":true,
+                 "width":1,
+                 "x":2,
+                 "y":3
+                }, 
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"key",
+                 "point":true,
+                 "rotation":0,
+                 "type":"key",
+                 "visible":true,
+                 "width":0,
+                 "x":2.5,
+                 "y":1.49997346200798
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":3,
+ "nextobjectid":4,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.11.0",
+ "tileheight":1,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"..\/..\/..\/tiled\/marker.tsx"
+        }],
+ "tilewidth":1,
+ "type":"map",
+ "version":"1.10",
+ "width":5
+}
