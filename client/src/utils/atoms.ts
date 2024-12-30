@@ -48,3 +48,4 @@ export const cAtomMoveSpeed = cAtomStore<number>();
 export const cAtomPositionCallbacks =
   cAtomStore<((id: string, position: Vector3) => void)[]>();
 export const cAtomNearestSpawner = cAtomStore<string>();
+export const cAtomScale = cAtomStore<Vector3>();
